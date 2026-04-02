@@ -14,33 +14,37 @@
 </head>
 <body class="bg-gray-50 pb-10 font-sans text-gray-900">
 
-    <header class="sticky top-0 z-50 bg-white border-b border-gray-100 p-4 flex justify-between items-center shadow-sm">
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 p-4 flex justify-between items-center shadow-sm">
         <div>
-            <h1 class="text-xl font-black text-red-600 leading-none tracking-tighter uppercase text-2xl italic">dGarage</h1>
+            <h1 class="text-xl font-black text-red-600 leading-none tracking-tighter uppercase italic">dGarage</h1>
             <p class="text-[9px] font-bold text-gray-400 tracking-widest uppercase">Scale Diecast Tracker</p>
         </div>
-        <div class="flex gap-2">
-            <a href="https://ko-fi.com/dgarage" target="_blank" class="bg-[#29abe2] text-white p-2 rounded-full shadow-md active:scale-90 transition">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.881 8.948c-.773-4.085-4.859-5.005-4.859-5.005s-.507-.136-.507-.535V.535C18.515.241 18.272 0 17.978 0H1.914C1.619 0 1.377.241 1.377.535v15.071c0 .294.242.536.537.536H15.6c.294 0 .536-.242.536-.536V10.22s.313-.061.503-.061c.883 0 3.424.116 4.316 1.848.718 1.396.347 2.803-.016 3.52-.361.714-.852.888-.852.888s-.175.056-.175.438v.558c0 .294.241.536.536.536h.634c.294 0 .536-.242.536-.536V16.8s2.003-1.815 2.263-7.852z"/></svg>
-            </a>
-            <button id="installBtn" class="hidden bg-gray-900 text-white text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-lg">Install</button>
-        </div>
+        <button id="installBtn" class="hidden bg-gray-900 text-white text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-lg active:scale-95 transition-all">
+            Install App
+        </button>
     </header>
 
-    <section class="p-4 grid grid-cols-2 gap-3 max-w-2xl mx-auto">
-        <a href="https://discord.gg/ZbzRhfuH7n" target="_blank" class="bg-indigo-600 p-3 rounded-2xl text-white shadow-md active:scale-95 transition">
-            <p class="text-[10px] font-bold opacity-80 uppercase tracking-tighter mb-1">🇺🇦 Ukrainian Collectors</p>
-            <p class="text-xs font-black">Join Discord →</p>
-        </a>
-        <a href="https://discord.gg/u3Z9nJB6JF" target="_blank" class="bg-gray-800 p-3 rounded-2xl text-white shadow-md active:scale-95 transition">
-            <p class="text-[10px] font-bold opacity-80 uppercase tracking-tighter mb-1">💬 dGarage Discord</p>
-            <p class="text-xs font-black">Restock Alerts →</p>
+    <section class="p-4 max-w-2xl mx-auto space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+            <a href="https://discord.gg/ZbzRhfuH7n" target="_blank" class="bg-[#5865F2] p-3 rounded-2xl text-white shadow-sm active:scale-95 transition overflow-hidden">
+                <p class="text-[9px] font-bold opacity-80 uppercase tracking-tighter mb-1 truncate">🇺🇦 UKR Collectors</p>
+                <p class="text-xs font-black italic">Discord →</p>
+            </a>
+            <a href="https://discord.gg/u3Z9nJB6JF" target="_blank" class="bg-gray-800 p-3 rounded-2xl text-white shadow-sm active:scale-95 transition overflow-hidden">
+                <p class="text-[9px] font-bold opacity-80 uppercase tracking-tighter mb-1 truncate">💬 dGarage Alerts</p>
+                <p class="text-xs font-black italic">Discord →</p>
+            </a>
+        </div>
+        
+        <a href="https://ko-fi.com/dgarage" target="_blank" class="flex items-center justify-center gap-3 bg-[#29abe2] p-3.5 rounded-2xl text-white shadow-md active:scale-[0.98] transition-all border-b-4 border-black/10">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.881 8.948c-.773-4.085-4.859-5.005-4.859-5.005s-.507-.136-.507-.535V.535C18.515.241 18.272 0 17.978 0H1.914C1.619 0 1.377.241 1.377.535v15.071c0 .294.242.536.537.536H15.6c.294 0 .536-.242.536-.536V10.22s.313-.061.503-.061c.883 0 3.424.116 4.316 1.848.718 1.396.347 2.803-.016 3.52-.361.714-.852.888-.852.888s-.175.056-.175.438v.558c0 .294.241.536.536.536h.634c.294 0 .536-.242.536-.536V16.8s2.003-1.815 2.263-7.852z"/></svg>
+            <span class="text-[11px] font-black uppercase tracking-widest">Support project on Ko-fi</span>
         </a>
     </section>
 
     <div class="px-4 py-2 max-w-2xl mx-auto flex justify-between items-center border-t border-gray-100">
         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic tracking-tight">Live Inventory</span>
-        <select id="sortOrder" onchange="sortCards()" class="text-[10px] font-black bg-white border border-gray-300 rounded px-2 py-1 outline-none uppercase tracking-tighter">
+        <select id="sortOrder" onchange="sortCards()" class="text-[10px] font-black bg-white border border-gray-300 rounded-lg px-2 py-1 outline-none uppercase tracking-tighter">
             <option value="asc" selected>Qty: Low to High</option>
             <option value="desc">Qty: High to Low</option>
             <option value="new">Sort: Newest</option>
