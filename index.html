@@ -8,7 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .product-card { transition: transform 0.2s ease; }
+        .product-card:active { transform: scale(0.98); }
     </style>
 </head>
 <body class="bg-gray-50 pb-10 font-sans text-gray-900">
@@ -27,159 +28,33 @@
     </header>
 
     <section class="p-4 grid grid-cols-2 gap-3 max-w-2xl mx-auto">
-        <a href="https://discord.gg/W9uvMrRZ" target="_blank" class="bg-indigo-600 p-3 rounded-2xl text-white shadow-md active:scale-95 transition">
+        <a href="https://discord.gg/ZbzRhfuH7n" target="_blank" class="bg-indigo-600 p-3 rounded-2xl text-white shadow-md active:scale-95 transition">
             <p class="text-[10px] font-bold opacity-80 uppercase tracking-tighter mb-1">🇺🇦 Ukrainian Collectors</p>
             <p class="text-xs font-black">Join Discord →</p>
         </a>
-        <a href="https://discord.gg/qxcGrVAk" target="_blank" class="bg-gray-800 p-3 rounded-2xl text-white shadow-md active:scale-95 transition">
+        <a href="https://discord.gg/u3Z9nJB6JF" target="_blank" class="bg-gray-800 p-3 rounded-2xl text-white shadow-md active:scale-95 transition">
             <p class="text-[10px] font-bold opacity-80 uppercase tracking-tighter mb-1">💬 dGarage Discord</p>
             <p class="text-xs font-black">Restock Alerts →</p>
         </a>
     </section>
 
     <div class="px-4 py-2 max-w-2xl mx-auto flex justify-between items-center border-t border-gray-100">
-        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Live Inventory</span>
+        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic tracking-tight">Live Inventory</span>
         <select id="sortOrder" onchange="sortCards()" class="text-[10px] font-black bg-white border border-gray-300 rounded px-2 py-1 outline-none uppercase tracking-tighter">
-            <option value="new">Sort: Newest</option>
-            <option value="asc">Qty: Low to High</option>
+            <option value="asc" selected>Qty: Low to High</option>
             <option value="desc">Qty: High to Low</option>
+            <option value="new">Sort: Newest</option>
         </select>
     </div>
 
     <main id="productContainer" class="p-4 grid gap-4 max-w-2xl mx-auto">
         
         <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
-             data-qty="134" 
-             data-time="2026-04-02T20:16:59.742746+00:00">
-            
-            <div class="relative">
-                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/hbbwkwpqfnh9c752oha2.jpg?v=1767977974" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100">
-                
-            </div>
-
-            <div class="flex-1 min-w-0">
-                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">RLC Exclusive 2025 Hot Wheels Super Treasure Hunt Set</h3>
-                
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
-                        $275.0
-                    </span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase italic">
-                        Updated: 2026-04-02 20:16
-                    </span>
-                </div>
-
-                <div class="flex justify-between items-end">
-                    <div class="flex items-baseline gap-1">
-                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">134</span>
-                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units Left</span>
-                    </div>
-                    <a href="https://creations.mattel.com/products/red-line-club-exclusive-2025-hot-wheels-super-treasure-hunt-set-jcp51" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
-             data-qty="345" 
-             data-time="2026-04-02T20:16:57.24097+00:00">
-            
-            <div class="relative">
-                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/7fa4760788aa532d0137351d549e5aea067e8a7c.jpg?v=1765933365" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100">
-                
-            </div>
-
-            <div class="flex-1 min-w-0">
-                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Premium Car Culture 2-Pack - 2005 Mitsubishi Lancer Evolution IX Wagon / Remorque & 2004 Subaru Forester STI</h3>
-                
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
-                        $13.0
-                    </span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase italic">
-                        Updated: 2026-04-02 20:16
-                    </span>
-                </div>
-
-                <div class="flex justify-between items-end">
-                    <div class="flex items-baseline gap-1">
-                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">345</span>
-                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units Left</span>
-                    </div>
-                    <a href="https://creations.mattel.com/products/hot-wheels-premium-car-culture-2-pack-jhw46" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
-             data-qty="62" 
-             data-time="2026-04-02T20:16:04.971144+00:00">
-            
-            <div class="relative">
-                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/vfgsw3iybnguiqwypzrl.jpg?v=1723672844" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100">
-                
-                    <span class="absolute -top-1 -left-1 bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow-lg uppercase">Hot</span>
-                
-            </div>
-
-            <div class="flex-1 min-w-0">
-                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Car Culture Circuit Legends Corvette C8.R</h3>
-                
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
-                        $6.5
-                    </span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase italic">
-                        Updated: 2026-04-02 20:16
-                    </span>
-                </div>
-
-                <div class="flex justify-between items-end">
-                    <div class="flex items-baseline gap-1">
-                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">62</span>
-                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units Left</span>
-                    </div>
-                    <a href="https://creations.mattel.com/products/hot-wheels-car-culture-circuit-legends-vehicle-hrv95" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
-             data-qty="366" 
-             data-time="2026-04-02T20:14:48.471832+00:00">
-            
-            <div class="relative">
-                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/d6lqv36bqqq3cqnn8af4.jpg?v=1763509317" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100">
-                
-            </div>
-
-            <div class="flex-1 min-w-0">
-                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Premium Fast & Furious 2003 Dodge Viper SRT 10</h3>
-                
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
-                        $8.0
-                    </span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase italic">
-                        Updated: 2026-04-02 20:14
-                    </span>
-                </div>
-
-                <div class="flex justify-between items-end">
-                    <div class="flex items-baseline gap-1">
-                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">366</span>
-                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units Left</span>
-                    </div>
-                    <a href="https://creations.mattel.com/products/hot-wheels-premium-fast-furious-vehicle-jbl85" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
              data-qty="16" 
-             data-time="2026-04-02T20:14:18.804808+00:00">
+             data-time="2026-04-02T20:20:32.61077+00:00">
             
             <div class="relative">
-                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/HWC_PDP_HRT57_PIP_FE_24_001_4LB.jpg?v=1765306394" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100">
+                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/HWC_PDP_HRT57_PIP_FE_24_001_4LB.jpg?v=1765306394" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100" loading="lazy">
                 
                     <span class="absolute -top-1 -left-1 bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow-lg uppercase">Hot</span>
                 
@@ -192,15 +67,15 @@
                     <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
                         $6.5
                     </span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase italic">
-                        Updated: 2026-04-02 20:14
+                    <span class="text-[9px] text-gray-400 font-bold uppercase italic tracking-tighter">
+                        Upd: 2026-04-02 20:20
                     </span>
                 </div>
 
                 <div class="flex justify-between items-end">
                     <div class="flex items-baseline gap-1">
                         <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">16</span>
-                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units Left</span>
+                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
                     </div>
                     <a href="https://creations.mattel.com/products/hot-wheels-boulevard-vehicle-hrt57" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
                 </div>
@@ -208,166 +83,75 @@
         </div>
         
         <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
-             data-qty="505" 
-             data-time="2026-04-02T20:12:48.098019+00:00">
+             data-qty="62" 
+             data-time="2026-04-02T20:22:28.561017+00:00">
             
             <div class="relative">
-                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/rdmzqottsp2vvumuocop_6a8ab11e-6fd7-41ac-97e3-8d182c26a500.jpg?v=1763508435" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100">
+                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/vfgsw3iybnguiqwypzrl.jpg?v=1723672844" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100" loading="lazy">
+                
+                    <span class="absolute -top-1 -left-1 bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow-lg uppercase">Hot</span>
                 
             </div>
 
             <div class="flex-1 min-w-0">
-                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Elite 64 Aston Martin Valkyrie</h3>
-                
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
-                        $20.0
-                    </span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase italic">
-                        Updated: 2026-04-02 20:12
-                    </span>
-                </div>
-
-                <div class="flex justify-between items-end">
-                    <div class="flex items-baseline gap-1">
-                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">505</span>
-                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units Left</span>
-                    </div>
-                    <a href="https://creations.mattel.com/products/hot-wheels-elite-64-aston-martin-valkyrie-hwr91" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
-             data-qty="415" 
-             data-time="2026-04-02T20:12:44.399512+00:00">
-            
-            <div class="relative">
-                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/f0829df85d114edc7696dd75017c82a0ec1b787e.jpg?v=1765306479" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100">
-                
-            </div>
-
-            <div class="flex-1 min-w-0">
-                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Premium Fast & Furious 1970 Custom Plymouth Roadrunner</h3>
-                
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
-                        $8.0
-                    </span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase italic">
-                        Updated: 2026-04-02 20:12
-                    </span>
-                </div>
-
-                <div class="flex justify-between items-end">
-                    <div class="flex items-baseline gap-1">
-                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">415</span>
-                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units Left</span>
-                    </div>
-                    <a href="https://creations.mattel.com/products/hot-wheels-premium-fast-furious-1970-custom-plymouth-roadrunner-jbl87" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
-             data-qty="410" 
-             data-time="2026-04-02T20:12:41.044202+00:00">
-            
-            <div class="relative">
-                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/i1ui1wmtxez3ehkzowms.jpg?v=1763508406" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100">
-                
-            </div>
-
-            <div class="flex-1 min-w-0">
-                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Premium Car Culture Circuit Legends Pandem Subaru BRZ</h3>
-                
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
-                        $8.0
-                    </span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase italic">
-                        Updated: 2026-04-02 20:12
-                    </span>
-                </div>
-
-                <div class="flex justify-between items-end">
-                    <div class="flex items-baseline gap-1">
-                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">410</span>
-                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units Left</span>
-                    </div>
-                    <a href="https://creations.mattel.com/products/hot-wheels-premium-car-culture-circuit-legends-pandem-subaru-brz-jbk64" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
-             data-qty="285" 
-             data-time="2026-04-02T20:12:33.970729+00:00">
-            
-            <div class="relative">
-                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/HWC_PDP_JBL92_PIP_FE_25_001_4LB.jpg?v=1765306496" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100">
-                
-            </div>
-
-            <div class="flex-1 min-w-0">
-                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Fast & Furious Premium McLaren Senna</h3>
+                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Car Culture Circuit Legends Corvette C8.R</h3>
                 
                 <div class="flex items-center gap-2 mb-2">
                     <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
                         $6.5
                     </span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase italic">
-                        Updated: 2026-04-02 20:12
+                    <span class="text-[9px] text-gray-400 font-bold uppercase italic tracking-tighter">
+                        Upd: 2026-04-02 20:22
                     </span>
                 </div>
 
                 <div class="flex justify-between items-end">
                     <div class="flex items-baseline gap-1">
-                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">285</span>
-                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units Left</span>
+                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">62</span>
+                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
                     </div>
-                    <a href="https://creations.mattel.com/products/hot-wheels-premium-fast-furious-vehicle-jbl92" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
+                    <a href="https://creations.mattel.com/products/hot-wheels-car-culture-circuit-legends-vehicle-hrv95" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
                 </div>
             </div>
         </div>
         
         <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
-             data-qty="220" 
-             data-time="2026-04-02T20:12:30.828136+00:00">
+             data-qty="134" 
+             data-time="2026-04-02T20:16:59.742746+00:00">
             
             <div class="relative">
-                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/mzoxdcz42fiuntsep72w.jpg?v=1763508424" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100">
+                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/hbbwkwpqfnh9c752oha2.jpg?v=1767977974" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100" loading="lazy">
                 
             </div>
 
             <div class="flex-1 min-w-0">
-                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels x Futura Laboratories Mitsubishi 3000GT VR-4</h3>
+                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">RLC Exclusive 2025 Hot Wheels Super Treasure Hunt Set</h3>
                 
                 <div class="flex items-center gap-2 mb-2">
                     <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
-                        $45.0
+                        $275.0
                     </span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase italic">
-                        Updated: 2026-04-02 20:12
+                    <span class="text-[9px] text-gray-400 font-bold uppercase italic tracking-tighter">
+                        Upd: 2026-04-02 20:16
                     </span>
                 </div>
 
                 <div class="flex justify-between items-end">
                     <div class="flex items-baseline gap-1">
-                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">220</span>
-                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units Left</span>
+                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">134</span>
+                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
                     </div>
-                    <a href="https://creations.mattel.com/products/hot-wheels-x-futura-mitsubishi-3000gt-vr-4-jgp26" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
+                    <a href="https://creations.mattel.com/products/red-line-club-exclusive-2025-hot-wheels-super-treasure-hunt-set-jcp51" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
                 </div>
             </div>
         </div>
         
         <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
              data-qty="206" 
-             data-time="2026-04-02T20:12:27.275395+00:00">
+             data-time="2026-04-02T20:20:00.510312+00:00">
             
             <div class="relative">
-                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/98d33404285e35738fc12de86d2ae57abd8094a0.jpg?v=1763511656" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100">
+                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/98d33404285e35738fc12de86d2ae57abd8094a0.jpg?v=1763511656" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100" loading="lazy">
                 
             </div>
 
@@ -378,17 +162,234 @@
                     <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
                         $8.0
                     </span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase italic">
-                        Updated: 2026-04-02 20:12
+                    <span class="text-[9px] text-gray-400 font-bold uppercase italic tracking-tighter">
+                        Upd: 2026-04-02 20:20
                     </span>
                 </div>
 
                 <div class="flex justify-between items-end">
                     <div class="flex items-baseline gap-1">
                         <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">206</span>
-                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units Left</span>
+                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
                     </div>
                     <a href="https://creations.mattel.com/products/hot-wheels-premium-car-culture-jbl59" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
+             data-qty="220" 
+             data-time="2026-04-02T20:21:46.199182+00:00">
+            
+            <div class="relative">
+                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/mzoxdcz42fiuntsep72w.jpg?v=1763508424" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100" loading="lazy">
+                
+            </div>
+
+            <div class="flex-1 min-w-0">
+                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels x Futura Laboratories Mitsubishi 3000GT VR-4</h3>
+                
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
+                        $45.0
+                    </span>
+                    <span class="text-[9px] text-gray-400 font-bold uppercase italic tracking-tighter">
+                        Upd: 2026-04-02 20:21
+                    </span>
+                </div>
+
+                <div class="flex justify-between items-end">
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">220</span>
+                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
+                    </div>
+                    <a href="https://creations.mattel.com/products/hot-wheels-x-futura-mitsubishi-3000gt-vr-4-jgp26" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
+             data-qty="285" 
+             data-time="2026-04-02T20:21:49.186435+00:00">
+            
+            <div class="relative">
+                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/HWC_PDP_JBL92_PIP_FE_25_001_4LB.jpg?v=1765306496" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100" loading="lazy">
+                
+            </div>
+
+            <div class="flex-1 min-w-0">
+                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Fast & Furious Premium McLaren Senna</h3>
+                
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
+                        $6.5
+                    </span>
+                    <span class="text-[9px] text-gray-400 font-bold uppercase italic tracking-tighter">
+                        Upd: 2026-04-02 20:21
+                    </span>
+                </div>
+
+                <div class="flex justify-between items-end">
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">285</span>
+                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
+                    </div>
+                    <a href="https://creations.mattel.com/products/hot-wheels-premium-fast-furious-vehicle-jbl92" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
+             data-qty="345" 
+             data-time="2026-04-02T20:21:52.716034+00:00">
+            
+            <div class="relative">
+                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/7fa4760788aa532d0137351d549e5aea067e8a7c.jpg?v=1765933365" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100" loading="lazy">
+                
+            </div>
+
+            <div class="flex-1 min-w-0">
+                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Premium Car Culture 2-Pack - 2005 Mitsubishi Lancer Evolution IX Wagon / Remorque & 2004 Subaru Forester STI</h3>
+                
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
+                        $13.0
+                    </span>
+                    <span class="text-[9px] text-gray-400 font-bold uppercase italic tracking-tighter">
+                        Upd: 2026-04-02 20:21
+                    </span>
+                </div>
+
+                <div class="flex justify-between items-end">
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">345</span>
+                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
+                    </div>
+                    <a href="https://creations.mattel.com/products/hot-wheels-premium-car-culture-2-pack-jhw46" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
+             data-qty="366" 
+             data-time="2026-04-02T20:23:06.422216+00:00">
+            
+            <div class="relative">
+                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/d6lqv36bqqq3cqnn8af4.jpg?v=1763509317" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100" loading="lazy">
+                
+            </div>
+
+            <div class="flex-1 min-w-0">
+                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Premium Fast & Furious 2003 Dodge Viper SRT 10</h3>
+                
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
+                        $8.0
+                    </span>
+                    <span class="text-[9px] text-gray-400 font-bold uppercase italic tracking-tighter">
+                        Upd: 2026-04-02 20:23
+                    </span>
+                </div>
+
+                <div class="flex justify-between items-end">
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">366</span>
+                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
+                    </div>
+                    <a href="https://creations.mattel.com/products/hot-wheels-premium-fast-furious-vehicle-jbl85" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
+             data-qty="410" 
+             data-time="2026-04-02T20:21:57.412279+00:00">
+            
+            <div class="relative">
+                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/i1ui1wmtxez3ehkzowms.jpg?v=1763508406" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100" loading="lazy">
+                
+            </div>
+
+            <div class="flex-1 min-w-0">
+                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Premium Car Culture Circuit Legends Pandem Subaru BRZ</h3>
+                
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
+                        $8.0
+                    </span>
+                    <span class="text-[9px] text-gray-400 font-bold uppercase italic tracking-tighter">
+                        Upd: 2026-04-02 20:21
+                    </span>
+                </div>
+
+                <div class="flex justify-between items-end">
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">410</span>
+                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
+                    </div>
+                    <a href="https://creations.mattel.com/products/hot-wheels-premium-car-culture-circuit-legends-pandem-subaru-brz-jbk64" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
+             data-qty="415" 
+             data-time="2026-04-02T20:22:00.459761+00:00">
+            
+            <div class="relative">
+                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/f0829df85d114edc7696dd75017c82a0ec1b787e.jpg?v=1765306479" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100" loading="lazy">
+                
+            </div>
+
+            <div class="flex-1 min-w-0">
+                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Premium Fast & Furious 1970 Custom Plymouth Roadrunner</h3>
+                
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
+                        $8.0
+                    </span>
+                    <span class="text-[9px] text-gray-400 font-bold uppercase italic tracking-tighter">
+                        Upd: 2026-04-02 20:22
+                    </span>
+                </div>
+
+                <div class="flex justify-between items-end">
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">415</span>
+                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
+                    </div>
+                    <a href="https://creations.mattel.com/products/hot-wheels-premium-fast-furious-1970-custom-plymouth-roadrunner-jbl87" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="product-card bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4 items-center" 
+             data-qty="505" 
+             data-time="2026-04-02T20:22:04.453278+00:00">
+            
+            <div class="relative">
+                <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/rdmzqottsp2vvumuocop_6a8ab11e-6fd7-41ac-97e3-8d182c26a500.jpg?v=1763508435" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100" loading="lazy">
+                
+            </div>
+
+            <div class="flex-1 min-w-0">
+                <h3 class="font-black text-[12px] text-gray-800 uppercase leading-tight truncate mb-1">Hot Wheels Elite 64 Aston Martin Valkyrie</h3>
+                
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
+                        $20.0
+                    </span>
+                    <span class="text-[9px] text-gray-400 font-bold uppercase italic tracking-tighter">
+                        Upd: 2026-04-02 20:22
+                    </span>
+                </div>
+
+                <div class="flex justify-between items-end">
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">505</span>
+                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
+                    </div>
+                    <a href="https://creations.mattel.com/products/hot-wheels-elite-64-aston-martin-valkyrie-hwr91" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
                 </div>
             </div>
         </div>
@@ -397,7 +398,7 @@
 
     <footer class="p-10 text-center">
         <a href="https://ko-fi.com/dgarage" target="_blank" class="text-[10px] font-black text-gray-500 hover:text-blue-500 transition border-b-2 border-gray-200 uppercase tracking-widest">Support project on Ko-fi</a>
-        <p class="text-[9px] text-gray-300 font-bold uppercase mt-4">Last update: 02.04.2026 20:18</p>
+        <p class="text-[9px] text-gray-300 font-bold uppercase mt-4 tracking-tighter text-center">Last build: 02.04.2026 20:23</p>
     </footer>
 
     <script>

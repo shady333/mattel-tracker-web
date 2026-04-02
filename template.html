@@ -8,7 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .product-card { transition: transform 0.2s ease; }
+        .product-card:active { transform: scale(0.98); }
     </style>
 </head>
 <body class="bg-gray-50 pb-10 font-sans text-gray-900">
@@ -27,22 +28,22 @@
     </header>
 
     <section class="p-4 grid grid-cols-2 gap-3 max-w-2xl mx-auto">
-        <a href="https://discord.gg/W9uvMrRZ" target="_blank" class="bg-indigo-600 p-3 rounded-2xl text-white shadow-md active:scale-95 transition">
+        <a href="https://discord.gg/ZbzRhfuH7n" target="_blank" class="bg-indigo-600 p-3 rounded-2xl text-white shadow-md active:scale-95 transition">
             <p class="text-[10px] font-bold opacity-80 uppercase tracking-tighter mb-1">🇺🇦 Ukrainian Collectors</p>
             <p class="text-xs font-black">Join Discord →</p>
         </a>
-        <a href="https://discord.gg/qxcGrVAk" target="_blank" class="bg-gray-800 p-3 rounded-2xl text-white shadow-md active:scale-95 transition">
+        <a href="https://discord.gg/u3Z9nJB6JF" target="_blank" class="bg-gray-800 p-3 rounded-2xl text-white shadow-md active:scale-95 transition">
             <p class="text-[10px] font-bold opacity-80 uppercase tracking-tighter mb-1">💬 dGarage Discord</p>
             <p class="text-xs font-black">Restock Alerts →</p>
         </a>
     </section>
 
     <div class="px-4 py-2 max-w-2xl mx-auto flex justify-between items-center border-t border-gray-100">
-        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Live Inventory</span>
+        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic tracking-tight">Live Inventory</span>
         <select id="sortOrder" onchange="sortCards()" class="text-[10px] font-black bg-white border border-gray-300 rounded px-2 py-1 outline-none uppercase tracking-tighter">
-            <option value="new">Sort: Newest</option>
-            <option value="asc">Qty: Low to High</option>
+            <option value="asc" selected>Qty: Low to High</option>
             <option value="desc">Qty: High to Low</option>
+            <option value="new">Sort: Newest</option>
         </select>
     </div>
 
@@ -53,7 +54,7 @@
              data-time="{{ p.updated_at }}">
             
             <div class="relative">
-                <img src="{{ p.image or 'https://via.placeholder.com/100' }}" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100">
+                <img src="{{ p.image or 'https://via.placeholder.com/100' }}" class="w-20 h-20 object-contain rounded-2xl bg-gray-50 border border-gray-100" loading="lazy">
                 {% if p.current_qty < 100 %}
                     <span class="absolute -top-1 -left-1 bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow-lg uppercase">Hot</span>
                 {% endif %}
@@ -66,15 +67,15 @@
                     <span class="bg-green-100 text-green-700 text-[10px] font-black px-2 py-0.5 rounded italic">
                         ${{ p.price or '0.00' }}
                     </span>
-                    <span class="text-[9px] text-gray-400 font-bold uppercase italic">
-                        Updated: {{ p.updated_at[:16].replace('T', ' ') if p.updated_at else 'N/A' }}
+                    <span class="text-[9px] text-gray-400 font-bold uppercase italic tracking-tighter">
+                        Upd: {{ p.updated_at[:16].replace('T', ' ') if p.updated_at else 'N/A' }}
                     </span>
                 </div>
 
                 <div class="flex justify-between items-end">
                     <div class="flex items-baseline gap-1">
                         <span class="text-3xl font-black text-gray-900 tracking-tighter leading-none">{{ p.current_qty }}</span>
-                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units Left</span>
+                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
                     </div>
                     <a href="{{ p.url }}" target="_blank" class="bg-red-600 hover:bg-black text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-red-100 active:scale-95">Link</a>
                 </div>
@@ -85,7 +86,7 @@
 
     <footer class="p-10 text-center">
         <a href="https://ko-fi.com/dgarage" target="_blank" class="text-[10px] font-black text-gray-500 hover:text-blue-500 transition border-b-2 border-gray-200 uppercase tracking-widest">Support project on Ko-fi</a>
-        <p class="text-[9px] text-gray-300 font-bold uppercase mt-4">Last update: {{ last_updated }}</p>
+        <p class="text-[9px] text-gray-300 font-bold uppercase mt-4 tracking-tighter text-center">Last build: {{ last_updated }}</p>
     </footer>
 
     <script>
