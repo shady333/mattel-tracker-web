@@ -12,10 +12,10 @@ headers = {
 params = {
     "store": "eq.mattel",
     "is_active": "eq.true",
-    "current_qty": "lt.625",
-    "current_qty": "gt.0",  # ВІДСІЮЄМО НУЛІ
-    "select": "title,image,url,current_qty",
-    "order": "current_qty.asc" # За замовчуванням від мін до макс
+    "current_qty": "gt.0",    # Більше 0
+    "current_qty": "lt.625",  # Менше 625
+    "select": "title,image,url,current_qty,price,updated_at",
+    "order": "updated_at.desc" # Останні оновлення зверху
 }
 
 response = requests.get(url, headers=headers, params=params)
