@@ -9,17 +9,23 @@ headers = {
     "apikey": os.getenv('SUPABASE_KEY'),
     "Authorization": f"Bearer {os.getenv('SUPABASE_KEY')}",
 }
+
+# ВИПРАВЛЕНО: об'єднуємо умови в один рядок через кому (це означає AND)
 params = {
     "store": "eq.mattel",
     "is_active": "eq.true",
-    "current_qty": "gt.0",    # Більше 0
-    "current_qty": "lt.625",  # Менше 625
+    "current_qty": "gt.0,lt.625",  # ТУТ МАГІЯ: більше 0 ТА менше 625
     "select": "title,image,url,current_qty,price,updated_at",
-    "order": "updated_at.desc" # Останні оновлення зверху
+    "order": "updated_at.desc"
 }
 
-response = requests.get(url, headers=headers, params=params)
-products = response.json()
+try:
+    response = requests.get(url, headers=headers, params=params)
+    response.raise_for_status()
+    products = response.json()
+except Exception as e:
+    print(f"Error fetching data: {e}")
+    products = []
 
 # 2. Рендеринг шаблону
 with open('template.html', 'r') as f:
