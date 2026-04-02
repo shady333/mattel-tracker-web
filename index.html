@@ -10,6 +10,8 @@
     <style>
         .product-card { transition: transform 0.1s ease; }
         .product-card:active { transform: scale(0.98); }
+        /* Prevent text selection on long press for a more app-like feel */
+        body { -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
 <body class="bg-gray-50 pb-10 font-sans text-gray-900">
@@ -17,7 +19,7 @@
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 p-4 flex justify-between items-center shadow-sm">
         <div>
             <h1 class="text-xl font-black text-red-600 leading-none tracking-tighter uppercase italic">dGarage</h1>
-            <p class="text-[9px] font-bold text-gray-400 tracking-widest uppercase">Scale Diecast Tracker</p>
+            <p class="text-[9px] font-bold text-gray-400 tracking-widest uppercase text-left">Scale Diecast Tracker</p>
         </div>
         <button id="installBtn" class="hidden bg-gray-900 text-white text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-lg active:scale-95 transition-all">
             Install App
@@ -28,7 +30,7 @@
         <div class="grid grid-cols-2 gap-3">
             <a href="https://discord.gg/ZbzRhfuH7n" target="_blank" class="bg-[#5865F2] p-3 rounded-2xl text-white shadow-sm active:scale-95 transition overflow-hidden">
                 <p class="text-[9px] font-bold opacity-80 uppercase tracking-tighter mb-1 truncate">🇺🇦 UKR Collectors</p>
-                <p class="text-xs font-black italic">Join Discord →</p>
+                <p class="text-xs font-black italic">Discord →</p>
             </a>
             <a href="https://discord.gg/u3Z9nJB6JF" target="_blank" class="bg-gray-800 p-3 rounded-2xl text-white shadow-sm active:scale-95 transition overflow-hidden">
                 <p class="text-[9px] font-bold opacity-80 uppercase tracking-tighter mb-1 truncate">💬 dGarage Alerts</p>
@@ -43,7 +45,7 @@
     </section>
 
     <div class="px-4 py-2 max-w-2xl mx-auto flex justify-between items-center border-t border-gray-100">
-        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic italic">Live Inventory</span>
+        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Live Inventory</span>
         <select id="sortOrder" onchange="sortCards()" class="text-[10px] font-black bg-white border border-gray-300 rounded-lg px-2 py-1 outline-none uppercase tracking-tighter">
             <option value="asc" selected>Qty: Low to High</option>
             <option value="desc">Qty: High to Low</option>
@@ -55,7 +57,7 @@
         
         <div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden" 
              data-qty="16" 
-             data-time="2026-04-02T21:01:59.203357+00:00">
+             data-time="2026-04-02T21:08:36.061824+00:00">
             
             <div class="relative flex-shrink-0">
                 <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/HWC_PDP_HRT57_PIP_FE_24_001_4LB.jpg?v=1765306394" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50" loading="lazy">
@@ -64,7 +66,7 @@
                 
             </div>
 
-            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
                 <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">
                     Hot Wheels Boulevard Meyers Manx
                 </h3>
@@ -73,8 +75,8 @@
                     <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
                         $6.5
                     </span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate">
-                        Upd: 21:01
+                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate product-time" data-utc="2026-04-02T21:08:36.061824+00:00">
+                        Loading...
                     </span>
                 </div>
 
@@ -93,7 +95,7 @@
         
         <div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden" 
              data-qty="61" 
-             data-time="2026-04-02T20:55:52.959356+00:00">
+             data-time="2026-04-02T21:09:05.516899+00:00">
             
             <div class="relative flex-shrink-0">
                 <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/vfgsw3iybnguiqwypzrl.jpg?v=1723672844" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50" loading="lazy">
@@ -102,7 +104,7 @@
                 
             </div>
 
-            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
                 <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">
                     Hot Wheels Car Culture Circuit Legends Corvette C8.R
                 </h3>
@@ -111,8 +113,8 @@
                     <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
                         $6.5
                     </span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate">
-                        Upd: 20:55
+                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate product-time" data-utc="2026-04-02T21:09:05.516899+00:00">
+                        Loading...
                     </span>
                 </div>
 
@@ -131,14 +133,14 @@
         
         <div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden" 
              data-qty="134" 
-             data-time="2026-04-02T20:58:36.465763+00:00">
+             data-time="2026-04-02T21:06:37.436757+00:00">
             
             <div class="relative flex-shrink-0">
                 <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/hbbwkwpqfnh9c752oha2.jpg?v=1767977974" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50" loading="lazy">
                 
             </div>
 
-            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
                 <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">
                     RLC Exclusive 2025 Hot Wheels Super Treasure Hunt Set
                 </h3>
@@ -147,8 +149,8 @@
                     <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
                         $275.0
                     </span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate">
-                        Upd: 20:58
+                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate product-time" data-utc="2026-04-02T21:06:37.436757+00:00">
+                        Loading...
                     </span>
                 </div>
 
@@ -167,14 +169,14 @@
         
         <div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden" 
              data-qty="206" 
-             data-time="2026-04-02T20:59:13.645745+00:00">
+             data-time="2026-04-02T21:07:46.756973+00:00">
             
             <div class="relative flex-shrink-0">
                 <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/98d33404285e35738fc12de86d2ae57abd8094a0.jpg?v=1763511656" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50" loading="lazy">
                 
             </div>
 
-            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
                 <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">
                     Hot Wheels Premium Pop Culture '92 Jeep Wrangler Sahara
                 </h3>
@@ -183,8 +185,8 @@
                     <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
                         $8.0
                     </span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate">
-                        Upd: 20:59
+                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate product-time" data-utc="2026-04-02T21:07:46.756973+00:00">
+                        Loading...
                     </span>
                 </div>
 
@@ -203,14 +205,14 @@
         
         <div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden" 
              data-qty="220" 
-             data-time="2026-04-02T20:56:46.729142+00:00">
+             data-time="2026-04-02T21:07:49.519682+00:00">
             
             <div class="relative flex-shrink-0">
                 <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/mzoxdcz42fiuntsep72w.jpg?v=1763508424" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50" loading="lazy">
                 
             </div>
 
-            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
                 <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">
                     Hot Wheels x Futura Laboratories Mitsubishi 3000GT VR-4
                 </h3>
@@ -219,8 +221,8 @@
                     <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
                         $45.0
                     </span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate">
-                        Upd: 20:56
+                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate product-time" data-utc="2026-04-02T21:07:49.519682+00:00">
+                        Loading...
                     </span>
                 </div>
 
@@ -239,14 +241,14 @@
         
         <div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden" 
              data-qty="285" 
-             data-time="2026-04-02T20:57:48.305964+00:00">
+             data-time="2026-04-02T21:07:53.679657+00:00">
             
             <div class="relative flex-shrink-0">
                 <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/HWC_PDP_JBL92_PIP_FE_25_001_4LB.jpg?v=1765306496" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50" loading="lazy">
                 
             </div>
 
-            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
                 <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">
                     Hot Wheels Fast & Furious Premium McLaren Senna
                 </h3>
@@ -255,8 +257,8 @@
                     <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
                         $6.5
                     </span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate">
-                        Upd: 20:57
+                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate product-time" data-utc="2026-04-02T21:07:53.679657+00:00">
+                        Loading...
                     </span>
                 </div>
 
@@ -275,14 +277,14 @@
         
         <div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden" 
              data-qty="345" 
-             data-time="2026-04-02T20:57:51.953758+00:00">
+             data-time="2026-04-02T21:07:56.664213+00:00">
             
             <div class="relative flex-shrink-0">
                 <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/7fa4760788aa532d0137351d549e5aea067e8a7c.jpg?v=1765933365" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50" loading="lazy">
                 
             </div>
 
-            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
                 <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">
                     Hot Wheels Premium Car Culture 2-Pack - 2005 Mitsubishi Lancer Evolution IX Wagon / Remorque & 2004 Subaru Forester STI
                 </h3>
@@ -291,8 +293,8 @@
                     <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
                         $13.0
                     </span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate">
-                        Upd: 20:57
+                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate product-time" data-utc="2026-04-02T21:07:56.664213+00:00">
+                        Loading...
                     </span>
                 </div>
 
@@ -311,14 +313,14 @@
         
         <div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden" 
              data-qty="366" 
-             data-time="2026-04-02T20:59:41.917502+00:00">
+             data-time="2026-04-02T21:07:58.89975+00:00">
             
             <div class="relative flex-shrink-0">
                 <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/d6lqv36bqqq3cqnn8af4.jpg?v=1763509317" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50" loading="lazy">
                 
             </div>
 
-            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
                 <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">
                     Hot Wheels Premium Fast & Furious 2003 Dodge Viper SRT 10
                 </h3>
@@ -327,8 +329,8 @@
                     <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
                         $8.0
                     </span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate">
-                        Upd: 20:59
+                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate product-time" data-utc="2026-04-02T21:07:58.89975+00:00">
+                        Loading...
                     </span>
                 </div>
 
@@ -347,14 +349,14 @@
         
         <div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden" 
              data-qty="410" 
-             data-time="2026-04-02T20:59:45.282628+00:00">
+             data-time="2026-04-02T21:08:02.65584+00:00">
             
             <div class="relative flex-shrink-0">
                 <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/i1ui1wmtxez3ehkzowms.jpg?v=1763508406" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50" loading="lazy">
                 
             </div>
 
-            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
                 <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">
                     Hot Wheels Premium Car Culture Circuit Legends Pandem Subaru BRZ
                 </h3>
@@ -363,8 +365,8 @@
                     <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
                         $8.0
                     </span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate">
-                        Upd: 20:59
+                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate product-time" data-utc="2026-04-02T21:08:02.65584+00:00">
+                        Loading...
                     </span>
                 </div>
 
@@ -383,14 +385,14 @@
         
         <div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden" 
              data-qty="413" 
-             data-time="2026-04-02T20:59:48.488048+00:00">
+             data-time="2026-04-02T21:08:05.294163+00:00">
             
             <div class="relative flex-shrink-0">
                 <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/f0829df85d114edc7696dd75017c82a0ec1b787e.jpg?v=1765306479" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50" loading="lazy">
                 
             </div>
 
-            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
                 <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">
                     Hot Wheels Premium Fast & Furious 1970 Custom Plymouth Roadrunner
                 </h3>
@@ -399,8 +401,8 @@
                     <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
                         $8.0
                     </span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate">
-                        Upd: 20:59
+                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate product-time" data-utc="2026-04-02T21:08:05.294163+00:00">
+                        Loading...
                     </span>
                 </div>
 
@@ -419,14 +421,14 @@
         
         <div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden" 
              data-qty="505" 
-             data-time="2026-04-02T20:59:47.87605+00:00">
+             data-time="2026-04-02T21:03:30.047606+00:00">
             
             <div class="relative flex-shrink-0">
                 <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/rdmzqottsp2vvumuocop_6a8ab11e-6fd7-41ac-97e3-8d182c26a500.jpg?v=1763508435" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50" loading="lazy">
                 
             </div>
 
-            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
                 <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">
                     Hot Wheels Elite 64 Aston Martin Valkyrie
                 </h3>
@@ -435,8 +437,8 @@
                     <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
                         $20.0
                     </span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate">
-                        Upd: 20:59
+                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate product-time" data-utc="2026-04-02T21:03:30.047606+00:00">
+                        Loading...
                     </span>
                 </div>
 
@@ -456,17 +458,32 @@
     </main>
 
     <footer class="p-10 text-center space-y-4">
-        <div onclick="window.location.reload(true)" class="cursor-pointer active:scale-95 transition">
+        <div onclick="window.location.reload(true)" class="cursor-pointer active:scale-95 transition group">
             <p class="text-[9px] text-gray-400 font-black uppercase tracking-widest">
-                Data Updated: <span class="text-red-500">02.04.2026 21:02</span>
+                Data Updated: <span class="text-red-500 build-time" data-utc="02.04.2026 21:09">02.04.2026 21:09 UTC</span>
             </p>
-            <p class="text-[8px] text-gray-300 font-bold uppercase mt-1 italic">
-                Tap to check for updates
+            <p class="text-[8px] text-gray-300 font-bold uppercase mt-1 italic group-hover:text-gray-500 transition-colors">
+                Tap to refresh cache
             </p>
         </div>
     </footer>
 
     <script>
+        // 1. Timezone Converter
+        function formatDates() {
+            document.querySelectorAll('.product-time').forEach(el => {
+                const utcDate = el.getAttribute('data-utc');
+                if (utcDate && utcDate !== 'None') {
+                    const date = new Date(utcDate);
+                    // Shows local time (e.g., 14:30)
+                    el.innerText = 'Upd: ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                } else {
+                    el.innerText = 'Upd: N/A';
+                }
+            });
+        }
+
+        // 2. Sorting Logic
         function sortCards() {
             const container = document.getElementById('productContainer');
             const cards = Array.from(container.getElementsByClassName('product-card'));
@@ -481,7 +498,7 @@
             cards.forEach(card => container.appendChild(card));
         }
 
-        // PWA Install Logic
+        // 3. PWA & iOS Install Logic
         let deferredPrompt;
         const installBtn = document.getElementById('installBtn');
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -492,7 +509,7 @@
             installBtn.classList.remove('hidden');
             installBtn.classList.replace('bg-gray-900', 'bg-blue-600');
             installBtn.addEventListener('click', () => {
-                alert('To install on iPhone:\n1. Tap the Share button (square with arrow up).\n2. Scroll down and tap "Add to Home Screen".\n3. Tap "Add" at the top right.');
+                alert('To install dGarage on iPhone:\n1. Tap the "Share" icon (square with arrow up) at the bottom.\n2. Scroll down and select "Add to Home Screen".\n3. Tap "Add" at the top-right corner.');
             });
         } else {
             window.addEventListener('beforeinstallprompt', (e) => {
@@ -500,6 +517,7 @@
                 deferredPrompt = e;
                 installBtn.classList.remove('hidden');
             });
+
             installBtn.addEventListener('click', async () => {
                 if (deferredPrompt) {
                     deferredPrompt.prompt();
@@ -509,8 +527,8 @@
                 }
             });
         }
-        
-        // Auto-refresh when coming back to the tab
+
+        // 4. Auto-refresh logic (checks every 15 mins when user returns to app)
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === 'visible') {
                 const lastCheck = localStorage.getItem('last_refresh');
@@ -521,6 +539,9 @@
                 }
             }
         });
+
+        // Initialize
+        formatDates();
     </script>
 </body>
 </html>

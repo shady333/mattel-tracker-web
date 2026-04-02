@@ -10,6 +10,8 @@
     <style>
         .product-card { transition: transform 0.1s ease; }
         .product-card:active { transform: scale(0.98); }
+        /* Prevent text selection on long press for a more app-like feel */
+        body { -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
 <body class="bg-gray-50 pb-10 font-sans text-gray-900">
@@ -17,7 +19,7 @@
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 p-4 flex justify-between items-center shadow-sm">
         <div>
             <h1 class="text-xl font-black text-red-600 leading-none tracking-tighter uppercase italic">dGarage</h1>
-            <p class="text-[9px] font-bold text-gray-400 tracking-widest uppercase">Scale Diecast Tracker</p>
+            <p class="text-[9px] font-bold text-gray-400 tracking-widest uppercase text-left">Scale Diecast Tracker</p>
         </div>
         <button id="installBtn" class="hidden bg-gray-900 text-white text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-lg active:scale-95 transition-all">
             Install App
@@ -28,7 +30,7 @@
         <div class="grid grid-cols-2 gap-3">
             <a href="https://discord.gg/ZbzRhfuH7n" target="_blank" class="bg-[#5865F2] p-3 rounded-2xl text-white shadow-sm active:scale-95 transition overflow-hidden">
                 <p class="text-[9px] font-bold opacity-80 uppercase tracking-tighter mb-1 truncate">🇺🇦 UKR Collectors</p>
-                <p class="text-xs font-black italic">Join Discord →</p>
+                <p class="text-xs font-black italic">Discord →</p>
             </a>
             <a href="https://discord.gg/u3Z9nJB6JF" target="_blank" class="bg-gray-800 p-3 rounded-2xl text-white shadow-sm active:scale-95 transition overflow-hidden">
                 <p class="text-[9px] font-bold opacity-80 uppercase tracking-tighter mb-1 truncate">💬 dGarage Alerts</p>
@@ -43,7 +45,7 @@
     </section>
 
     <div class="px-4 py-2 max-w-2xl mx-auto flex justify-between items-center border-t border-gray-100">
-        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic italic">Live Inventory</span>
+        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Live Inventory</span>
         <select id="sortOrder" onchange="sortCards()" class="text-[10px] font-black bg-white border border-gray-300 rounded-lg px-2 py-1 outline-none uppercase tracking-tighter">
             <option value="asc" selected>Qty: Low to High</option>
             <option value="desc">Qty: High to Low</option>
@@ -64,7 +66,7 @@
                 {% endif %}
             </div>
 
-            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
                 <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">
                     {{ p.title }}
                 </h3>
@@ -73,8 +75,8 @@
                     <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
                         ${{ p.price or '0.00' }}
                     </span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate">
-                        Upd: {{ p.updated_at[11:16] if p.updated_at else '--:--' }}
+                    <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter truncate product-time" data-utc="{{ p.updated_at }}">
+                        Loading...
                     </span>
                 </div>
 
@@ -94,17 +96,32 @@
     </main>
 
     <footer class="p-10 text-center space-y-4">
-        <div onclick="window.location.reload(true)" class="cursor-pointer active:scale-95 transition">
+        <div onclick="window.location.reload(true)" class="cursor-pointer active:scale-95 transition group">
             <p class="text-[9px] text-gray-400 font-black uppercase tracking-widest">
-                Data Updated: <span class="text-red-500">{{ last_updated }}</span>
+                Data Updated: <span class="text-red-500 build-time" data-utc="{{ last_updated }}">{{ last_updated }} UTC</span>
             </p>
-            <p class="text-[8px] text-gray-300 font-bold uppercase mt-1 italic">
-                Tap to check for updates
+            <p class="text-[8px] text-gray-300 font-bold uppercase mt-1 italic group-hover:text-gray-500 transition-colors">
+                Tap to refresh cache
             </p>
         </div>
     </footer>
 
     <script>
+        // 1. Timezone Converter
+        function formatDates() {
+            document.querySelectorAll('.product-time').forEach(el => {
+                const utcDate = el.getAttribute('data-utc');
+                if (utcDate && utcDate !== 'None') {
+                    const date = new Date(utcDate);
+                    // Shows local time (e.g., 14:30)
+                    el.innerText = 'Upd: ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                } else {
+                    el.innerText = 'Upd: N/A';
+                }
+            });
+        }
+
+        // 2. Sorting Logic
         function sortCards() {
             const container = document.getElementById('productContainer');
             const cards = Array.from(container.getElementsByClassName('product-card'));
@@ -119,7 +136,7 @@
             cards.forEach(card => container.appendChild(card));
         }
 
-        // PWA Install Logic
+        // 3. PWA & iOS Install Logic
         let deferredPrompt;
         const installBtn = document.getElementById('installBtn');
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -130,7 +147,7 @@
             installBtn.classList.remove('hidden');
             installBtn.classList.replace('bg-gray-900', 'bg-blue-600');
             installBtn.addEventListener('click', () => {
-                alert('To install on iPhone:\n1. Tap the Share button (square with arrow up).\n2. Scroll down and tap "Add to Home Screen".\n3. Tap "Add" at the top right.');
+                alert('To install dGarage on iPhone:\n1. Tap the "Share" icon (square with arrow up) at the bottom.\n2. Scroll down and select "Add to Home Screen".\n3. Tap "Add" at the top-right corner.');
             });
         } else {
             window.addEventListener('beforeinstallprompt', (e) => {
@@ -138,6 +155,7 @@
                 deferredPrompt = e;
                 installBtn.classList.remove('hidden');
             });
+
             installBtn.addEventListener('click', async () => {
                 if (deferredPrompt) {
                     deferredPrompt.prompt();
@@ -147,8 +165,8 @@
                 }
             });
         }
-        
-        // Auto-refresh when coming back to the tab
+
+        // 4. Auto-refresh logic (checks every 15 mins when user returns to app)
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === 'visible') {
                 const lastCheck = localStorage.getItem('last_refresh');
@@ -159,6 +177,9 @@
                 }
             }
         });
+
+        // Initialize
+        formatDates();
     </script>
 </body>
 </html>
