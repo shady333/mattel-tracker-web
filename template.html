@@ -2,23 +2,87 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Mattel Stock Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mattel Tracker</title>
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 p-4">
-    <h1 class="text-xl font-black text-red-600 mb-4">MATTEL LIVE STOCK</h1>
-    <div class="grid gap-4">
+<body class="bg-gray-100 pb-20 font-sans">
+
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur shadow-sm p-4 flex justify-between items-center">
+        <h1 class="text-xl font-black text-red-600">MATTEL <span class="text-gray-900">LIVE</span></h1>
+        
+        <button id="installBtn" class="hidden bg-red-600 text-white text-[10px] font-bold px-3 py-2 rounded-full shadow-lg active:scale-95 transition">
+            INSTALL APP
+        </button>
+    </header>
+
+    <div class="p-4 flex justify-between items-center">
+        <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Sorting:</span>
+        <select id="sortOrder" onchange="sortCards()" class="text-xs font-bold bg-white border border-gray-200 rounded-lg px-2 py-1 outline-none">
+            <option value="asc">Qty: Low to High</option>
+            <option value="desc">Qty: High to Low</option>
+        </select>
+    </div>
+
+    <main id="productContainer" class="p-4 grid gap-4 max-w-2xl mx-auto">
         {% for p in products %}
-        <div class="bg-white p-4 rounded-xl shadow-sm border flex gap-4 items-center">
-            <img src="{{ p.image or 'https://via.placeholder.com/100' }}" class="w-16 h-16 object-contain">
-            <div>
-                <h3 class="font-bold text-sm">{{ p.title }}</h3>
-                <p class="text-red-600 font-black text-xl">{{ p.current_qty }} LEFT</p>
-                <a href="{{ p.url }}" target="_blank" class="text-[10px] bg-gray-900 text-white px-3 py-1 rounded">BUY NOW</a>
+        <div class="product-card bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex gap-4 items-center" data-qty="{{ p.current_qty }}">
+            <img src="{{ p.image or 'https://via.placeholder.com/100' }}" class="w-16 h-16 object-contain rounded-lg bg-gray-50">
+            <div class="flex-1">
+                <h3 class="font-bold text-xs text-gray-800 uppercase leading-tight truncate mb-1">{{ p.title }}</h3>
+                <div class="flex justify-between items-end">
+                    <div>
+                        <span class="text-2xl font-black text-gray-900 leading-none">{{ p.current_qty }}</span>
+                        <span class="text-[10px] text-gray-400 font-bold uppercase ml-1">Left</span>
+                    </div>
+                    <a href="{{ p.url }}" target="_blank" class="bg-gray-900 text-white px-4 py-2 rounded-xl text-[10px] font-black active:scale-90 transition">LINK</a>
+                </div>
             </div>
         </div>
         {% endfor %}
-    </div>
-    <p class="text-xs text-gray-400 mt-6 text-center">Last updated: {{ last_updated }}</p>
+    </main>
+
+    <footer class="p-8 text-center">
+        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Updated: {{ last_updated }}</p>
+    </footer>
+
+    <script>
+        // ЛОГІКА СОРТУВАННЯ
+        function sortCards() {
+            const container = document.getElementById('productContainer');
+            const cards = Array.from(container.getElementsByClassName('product-card'));
+            const order = document.getElementById('sortOrder').value;
+
+            cards.sort((a, b) => {
+                const qtyA = parseInt(a.getAttribute('data-qty'));
+                const qtyB = parseInt(b.getAttribute('data-qty'));
+                return order === 'asc' ? qtyA - qtyB : qtyB - qtyA;
+            });
+
+            cards.forEach(card => container.appendChild(card));
+        }
+
+        // ЛОГІКА ІНСТАЛЯЦІЇ (PWA)
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.classList.remove('hidden'); // Показуємо кнопку, якщо PWA доступне
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    installBtn.classList.add('hidden');
+                }
+                deferredPrompt = null;
+            }
+        });
+    </script>
 </body>
 </html>
