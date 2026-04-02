@@ -67,7 +67,7 @@
                         ${{ p.price or '0.00' }}
                     </span>
                     <span class="text-[9px] text-gray-400 font-bold uppercase italic">
-                        Updated: {{ p.updated_at[:16].replace('T', ' ') }}
+                        Updated: {{ p.updated_at[:16].replace('T', ' ') if p.updated_at else 'N/A' }}
                     </span>
                 </div>
 
