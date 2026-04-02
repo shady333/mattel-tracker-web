@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dGarage | Mattel Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>dGarage | Mattel Stock Tracker</title>
     <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .product-card { transition: transform 0.2s ease; }
+        .product-card { transition: transform 0.1s ease; }
         .product-card:active { transform: scale(0.98); }
     </style>
 </head>
@@ -28,22 +28,22 @@
         <div class="grid grid-cols-2 gap-3">
             <a href="https://discord.gg/ZbzRhfuH7n" target="_blank" class="bg-[#5865F2] p-3 rounded-2xl text-white shadow-sm active:scale-95 transition overflow-hidden">
                 <p class="text-[9px] font-bold opacity-80 uppercase tracking-tighter mb-1 truncate">🇺🇦 UKR Collectors</p>
-                <p class="text-xs font-black italic">Discord →</p>
+                <p class="text-xs font-black italic">Join Discord →</p>
             </a>
             <a href="https://discord.gg/u3Z9nJB6JF" target="_blank" class="bg-gray-800 p-3 rounded-2xl text-white shadow-sm active:scale-95 transition overflow-hidden">
                 <p class="text-[9px] font-bold opacity-80 uppercase tracking-tighter mb-1 truncate">💬 dGarage Alerts</p>
-                <p class="text-xs font-black italic">Discord →</p>
+                <p class="text-xs font-black italic">Discord Hub →</p>
             </a>
         </div>
         
         <a href="https://ko-fi.com/dgarage" target="_blank" class="flex items-center justify-center gap-3 bg-[#29abe2] p-3.5 rounded-2xl text-white shadow-md active:scale-[0.98] transition-all border-b-4 border-black/10">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.881 8.948c-.773-4.085-4.859-5.005-4.859-5.005s-.507-.136-.507-.535V.535C18.515.241 18.272 0 17.978 0H1.914C1.619 0 1.377.241 1.377.535v15.071c0 .294.242.536.537.536H15.6c.294 0 .536-.242.536-.536V10.22s.313-.061.503-.061c.883 0 3.424.116 4.316 1.848.718 1.396.347 2.803-.016 3.52-.361.714-.852.888-.852.888s-.175.056-.175.438v.558c0 .294.241.536.536.536h.634c.294 0 .536-.242.536-.536V16.8s2.003-1.815 2.263-7.852z"/></svg>
-            <span class="text-[11px] font-black uppercase tracking-widest">Support project on Ko-fi</span>
+            <span class="text-[11px] font-black uppercase tracking-widest">Support dGarage on Ko-fi</span>
         </a>
     </section>
 
     <div class="px-4 py-2 max-w-2xl mx-auto flex justify-between items-center border-t border-gray-100">
-        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic tracking-tight">Live Inventory</span>
+        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest italic italic">Live Inventory</span>
         <select id="sortOrder" onchange="sortCards()" class="text-[10px] font-black bg-white border border-gray-300 rounded-lg px-2 py-1 outline-none uppercase tracking-tighter">
             <option value="asc" selected>Qty: Low to High</option>
             <option value="desc">Qty: High to Low</option>
@@ -58,7 +58,7 @@
              data-time="{{ p.updated_at }}">
             
             <div class="relative flex-shrink-0">
-                <img src="{{ p.image or 'https://via.placeholder.com/100' }}" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50 border border-gray-50" loading="lazy">
+                <img src="{{ p.image or 'https://via.placeholder.com/100' }}" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50" loading="lazy">
                 {% if p.current_qty < 100 %}
                     <span class="absolute -top-1 -left-1 bg-red-600 text-white text-[7px] font-black px-1 py-0.5 rounded shadow-sm uppercase">Hot</span>
                 {% endif %}
@@ -96,27 +96,63 @@
     <footer class="p-10 text-center space-y-4">
         <div onclick="window.location.reload(true)" class="cursor-pointer active:scale-95 transition">
             <p class="text-[9px] text-gray-400 font-black uppercase tracking-widest">
-                Data updated: <span class="text-red-500">{{ last_updated }}</span>
+                Data Updated: <span class="text-red-500">{{ last_updated }}</span>
             </p>
             <p class="text-[8px] text-gray-300 font-bold uppercase mt-1 italic">
                 Tap to check for updates
             </p>
         </div>
-        
-        <div class="pt-4 border-t border-gray-100 max-w-[100px] mx-auto opacity-20">
-            <h1 class="text-sm font-black text-gray-900 leading-none tracking-tighter uppercase italic">dGarage</h1>
-        </div>
     </footer>
 
     <script>
-        // Додаємо логіку автоматичного оновлення при поверненні на вкладку
-        // Якщо юзер згорнув PWA і відкрив через годину - сторінка сама рефрешнеться
+        function sortCards() {
+            const container = document.getElementById('productContainer');
+            const cards = Array.from(container.getElementsByClassName('product-card'));
+            const order = document.getElementById('sortOrder').value;
+
+            cards.sort((a, b) => {
+                if (order === 'new') return new Date(b.getAttribute('data-time')) - new Date(a.getAttribute('data-time'));
+                const qtyA = parseInt(a.getAttribute('data-qty'));
+                const qtyB = parseInt(b.getAttribute('data-qty'));
+                return order === 'asc' ? qtyA - qtyB : qtyB - qtyA;
+            });
+            cards.forEach(card => container.appendChild(card));
+        }
+
+        // PWA Install Logic
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+
+        if (isIOS && !isStandalone) {
+            installBtn.innerHTML = 'Add to Home Screen';
+            installBtn.classList.remove('hidden');
+            installBtn.classList.replace('bg-gray-900', 'bg-blue-600');
+            installBtn.addEventListener('click', () => {
+                alert('To install on iPhone:\n1. Tap the Share button (square with arrow up).\n2. Scroll down and tap "Add to Home Screen".\n3. Tap "Add" at the top right.');
+            });
+        } else {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBtn.classList.remove('hidden');
+            });
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') installBtn.classList.add('hidden');
+                    deferredPrompt = null;
+                }
+            });
+        }
+        
+        // Auto-refresh when coming back to the tab
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === 'visible') {
                 const lastCheck = localStorage.getItem('last_refresh');
                 const now = Date.now();
-                
-                // Якщо пройшло більше 15 хвилин з останнього перегляду
                 if (!lastCheck || (now - lastCheck) > 15 * 60 * 1000) {
                     localStorage.setItem('last_refresh', now);
                     window.location.reload(true);
