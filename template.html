@@ -13,11 +13,11 @@
         body { -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
-<body class="bg-gray-50 pb-10 font-sans text-gray-900">
+<body class="bg-gray-50 pb-10 font-sans text-gray-900 text-left">
 
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 p-4 flex justify-between items-center shadow-sm">
-        <div>
-            <h1 class="text-xl font-black text-red-600 leading-none tracking-tighter uppercase italic text-left">dGarage</h1>
+        <div class="text-left">
+            <h1 class="text-xl font-black text-red-600 leading-none tracking-tighter uppercase italic">dGarage</h1>
             <p class="text-[9px] font-bold text-gray-400 tracking-widest uppercase">Scale Diecast Tracker</p>
         </div>
         <button id="installBtn" class="hidden bg-gray-900 text-white text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-lg active:scale-95 transition-all">
@@ -56,12 +56,8 @@
                 <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">{{ p.title }}</h3>
                 
                 <div class="flex items-center gap-1.5 mt-1">
-                    <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
-                        ${{ p.price or '0.00' }}
-                    </span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase product-time" data-utc="{{ p.sold_at if mode == 'sold' else p.updated_at }}">
-                        Loading...
-                    </span>
+                    <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">${{ p.price or '0.00' }}</span>
+                    <span class="text-[8px] text-gray-400 font-bold uppercase product-time" data-utc="{{ p.sold_at if mode == 'sold' else p.updated_at }}">Loading...</span>
                 </div>
 
                 <div class="flex items-center justify-between mt-auto">
@@ -82,9 +78,7 @@
             </div>
 
             <div class="flex-shrink-0 ml-auto">
-                <a href="{{ p.url }}" target="_blank" class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
-                    Link
-                </a>
+                <a href="{{ p.url }}" target="_blank" class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">Link</a>
             </div>
         </div>
         {% endmacro %}
@@ -107,7 +101,6 @@
             </div>
             {% for p in sold_products %} {{ render_card(p, "sold") }} {% endfor %}
         </div>
-
     </main>
 
     <footer class="p-10 text-center space-y-6">
@@ -124,43 +117,50 @@
             <p class="text-[9px] text-gray-400 font-black uppercase tracking-widest">
                 Build Time: <span class="text-red-500 build-time" data-utc="{{ last_updated }}">Loading...</span>
             </p>
-            <p class="text-[8px] text-gray-300 font-bold uppercase italic">
-                Local Device Time
-            </p>
+            <p class="text-[8px] text-gray-300 font-bold uppercase italic">Local Device Time</p>
         </div>
     </footer>
 
     <script>
-        // 1. Force Refresh Function
+        // 1. Tab Switching Function
+        function switchTab(tab) {
+            // Hide all tab sections
+            document.querySelectorAll('.tab-section').forEach(s => s.classList.add('hidden'));
+            // Show the target section
+            document.getElementById('section-' + tab).classList.remove('hidden');
+            
+            // UI Update for buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active', 'text-gray-900');
+                btn.classList.add('text-gray-400');
+            });
+            const activeBtn = document.getElementById('tab-' + tab);
+            activeBtn.classList.add('tab-active');
+            activeBtn.classList.remove('text-gray-400');
+            
+            // Scroll to top of results
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 2. Data Refresh
         function forceRefresh() {
             localStorage.setItem('last_refresh', Date.now());
-            // true forces a reload from the server, bypassing the browser cache
             window.location.reload(true);
         }
 
-        // 2. Updated Timezone & Date Formatting Logic
+        // 3. Date Formatting
         function formatDates() {
-            const options = { 
-                month: 'short', 
-                day: '2-digit', 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                hour12: false 
-            };
-
-            // Format Product Times
+            const options = { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false };
+            
             document.querySelectorAll('.product-time').forEach(el => {
                 const utc = el.getAttribute('data-utc');
                 if (utc && utc !== 'None') {
                     const date = new Date(utc);
                     const isSold = el.closest('#section-sold');
-                    // Result: "Apr 03, 11:15"
-                    const localStr = date.toLocaleString('en-US', options);
-                    el.innerText = (isSold ? 'Sold: ' : 'Upd: ') + localStr;
+                    el.innerText = (isSold ? 'Sold: ' : 'Upd: ') + date.toLocaleString('en-US', options);
                 }
             });
 
-            // Format Footer Build Time
             const buildEl = document.querySelector('.build-time');
             if (buildEl) {
                 const utcBuild = buildEl.getAttribute('data-utc');
@@ -171,9 +171,35 @@
             }
         }
 
-        // ... (Include switchTab and PWA logic here as before) ...
+        // 4. PWA Logic
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
 
-        // Auto-refresh logic (checks every 15 mins)
+        if (isIOS && !isStandalone) {
+            installBtn.innerHTML = 'Add to Home Screen';
+            installBtn.classList.remove('hidden');
+            installBtn.classList.replace('bg-gray-900', 'bg-blue-600');
+            installBtn.onclick = () => alert('iOS Install:\n1. Tap the Share icon.\n2. Select "Add to Home Screen".');
+        } else {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBtn.classList.remove('hidden');
+            });
+            installBtn.onclick = async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt = null;
+                }
+            };
+        }
+
+        // Initialize formatting on load
+        formatDates();
+
+        // Check for auto-refresh every 15 mins
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === 'visible') {
                 const last = localStorage.getItem('last_refresh');
@@ -182,8 +208,6 @@
                 }
             }
         });
-
-        formatDates();
     </script>
 </body>
 </html>
