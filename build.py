@@ -8,7 +8,8 @@ sb_url = os.getenv('SUPABASE_URL')
 sb_key = os.getenv('SUPABASE_KEY')
 headers = {"apikey": sb_key, "Authorization": f"Bearer {sb_key}"}
 
-def fetch_data(endpoint, params):
+def fetch_data(endpoint, params=None):
+    # If params is a string, we append it manually to avoid encoding issues
     url = f"{sb_url}/rest/v1/{endpoint}"
     try:
         response = requests.get(url, headers=headers, params=params)
@@ -18,19 +19,18 @@ def fetch_data(endpoint, params):
         print(f"Error fetching {endpoint}: {e}")
         return []
 
-# TAB 1: Live Inventory
-# Active, Qty > 0, Qty < 625
-live_params = {
-    "store": "eq.mattel",
-    "is_active": "eq.true",
-    "current_qty": "gt.0,lt.625",
-    "select": "title,image,url,current_qty,price,updated_at,limit",
-    "order": "current_qty.asc"
-}
-live_products = fetch_data("products", live_params)
+# TAB 1: Live Inventory (Using string for params to fix 400 error)
+# Note: Manually constructing the string to prevent double-encoding of the comma
+live_url = f"{sb_url}/rest/v1/products?store=eq.mattel&is_active=eq.true&current_qty=gt.0&current_qty=lt.625&select=title,image,url,current_qty,price,updated_at,limit&order=current_qty.asc"
+live_products = []
+try:
+    res = requests.get(live_url, headers=headers)
+    res.raise_for_status()
+    live_products = res.json()
+except Exception as e:
+    print(f"Live products error: {e}")
 
 # TAB 2: Coming Soon
-# Active, availability == 'Coming Soon'
 soon_params = {
     "store": "eq.mattel",
     "is_active": "eq.true",
@@ -40,8 +40,7 @@ soon_params = {
 }
 coming_products = fetch_data("products", soon_params)
 
-# TAB 3: Sold Out (via product_qty_history)
-# 1. Get 7 latest records where new_qty is 0
+# TAB 3: Sold Out
 history_params = {
     "new_qty": "eq.0",
     "select": "product_id,changed_at",
@@ -52,24 +51,16 @@ history_records = fetch_data("product_qty_history", history_params)
 
 sold_products = []
 if history_records:
-    # 2. Extract IDs and fetch product details
-    product_ids = ",".join([f"\"{r['product_id']}\"" for r in history_records])
-    sold_details_params = {
-        "id": f"in.({product_ids})",
-        "select": "id,title,image,url,price,limit"
-    }
-    details = fetch_data("products", sold_details_params)
+    p_ids = ",".join([f"\"{r['product_id']}\"" for r in history_records])
+    details = fetch_data("products", {"id": f"in.({p_ids})", "select": "id,title,image,url,price,limit"})
     
-    # Map changed_at time from history to the product objects
     time_map = {r['product_id']: r['changed_at'] for r in history_records}
     for item in details:
         item['sold_at'] = time_map.get(item['id'])
         sold_products.append(item)
-    
-    # Sort sold_products by the history timestamp
-    sold_products.sort(key=lambda x: x['sold_at'], reverse=True)
+    sold_products.sort(key=lambda x: x.get('sold_at', ''), reverse=True)
 
-# 2. Render Template
+# 2. Render
 with open('template.html', 'r') as f:
     template = Template(f.read())
 
