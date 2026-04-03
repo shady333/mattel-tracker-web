@@ -33,7 +33,7 @@ except Exception as e:
 # TAB 2: Coming Soon
 soon_params = {
     "store": "eq.mattel",
-    "is_active": "eq.true",
+    # "is_active": "eq.true", # for test purpose 
     "availability": "eq.Coming Soon",
     "select": "title,image,url,current_qty,price,updated_at,limit",
     "order": "updated_at.desc"
