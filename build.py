@@ -40,24 +40,39 @@ soon_params = {
 }
 coming_products = fetch_data("products", soon_params)
 
-# TAB 3: Sold Out
+# TAB 3: Sold Out (Unique & Latest)
+# 1. Fetch 20 records to ensure we find 7 unique products even if some repeated
 history_params = {
     "new_qty": "eq.0",
     "select": "product_id,changed_at",
     "order": "changed_at.desc",
-    "limit": "7"
+    "limit": "20" 
 }
 history_records = fetch_data("product_qty_history", history_params)
 
 sold_products = []
 if history_records:
-    p_ids = ",".join([f"\"{r['product_id']}\"" for r in history_records])
+    # Use a dict to store the NEWEST 'changed_at' for each unique product_id
+    unique_sold_map = {}
+    for rec in history_records:
+        p_id = rec['product_id']
+        # Since history is sorted by desc, the first time we see an ID, it's the newest
+        if p_id not in unique_sold_map:
+            unique_sold_map[p_id] = rec['changed_at']
+        
+        # Stop once we have 7 unique products
+        if len(unique_sold_map) >= 7:
+            break
+
+    # 2. Extract the 7 unique IDs
+    p_ids = ",".join([f"\"{pid}\"" for pid in unique_sold_map.keys()])
     details = fetch_data("products", {"id": f"in.({p_ids})", "select": "id,title,image,url,price,limit"})
     
-    time_map = {r['product_id']: r['changed_at'] for r in history_records}
     for item in details:
-        item['sold_at'] = time_map.get(item['id'])
+        item['sold_at'] = unique_sold_map.get(item['id'])
         sold_products.append(item)
+    
+    # Final sort to ensure the UI shows them in order of the sold_at time
     sold_products.sort(key=lambda x: x.get('sold_at', ''), reverse=True)
 
 # 2. Render
