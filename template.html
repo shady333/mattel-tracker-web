@@ -79,14 +79,16 @@
         <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">{{ p.title }}</h3>
 
         <div class="flex items-center gap-1.5 mt-1">
-            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">${{ p.price or '0.00' }}</span>
+            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
+                ${{ p.price or '0.00' }}
+            </span>
             <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
                   data-mode="{{ mode }}"
                   data-utc="{{ p.sold_at if mode == 'sold' else p.updated_at }}">
-                  Loading...
+                Loading...
             </span>
         </div>
-
+        
         {% if mode == "sold" %}
         <div class="flex items-center gap-2 mt-0.5">
             {% if p.sold_duration %}
