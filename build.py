@@ -67,13 +67,11 @@ def fmt_duration(td: timedelta) -> str:
 
 def compute_last_cycle_stats(product_id: str) -> dict | None:
     """
-    Для одного product_id:
-    - тягнемо всю history по ньому
-    - знаходимо останній закритий цикл: restock → soldout
-    - рахуємо:
-        - sold_amount = сума всіх зменшень qty між restock і soldout
-        - duration = soldout_at - restock_at
-    Повертає dict або None, якщо циклу немає.
+    Останній закритий цикл для product_id:
+      - якщо є restock (0→X) перед soldout — беремо його як старт
+      - якщо restock немає, але історія починається з >0 — старт = перший запис
+      - sold_amount = сума всіх зменшень qty між start → soldout
+      - duration = soldout_at - restock_at
     """
     rows = fetch_data(
         "product_qty_history",
@@ -86,43 +84,71 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     if not rows:
         return None
 
-    pending_start = None
-    sold_amount = 0
-    last_cycle = None
-
+    # перетворюємо час
+    norm_rows = []
     for ev in rows:
-        old_q = ev.get("old_qty")
-        new_q = ev.get("new_qty")
         changed_at = ev.get("changed_at")
-        if changed_at is None:
+        if not changed_at:
             continue
-        changed_dt = datetime.fromisoformat(changed_at.replace("Z", "+00:00"))
+        dt = datetime.fromisoformat(changed_at.replace("Z", "+00:00"))
+        norm_rows.append({
+            "old_qty": ev.get("old_qty"),
+            "new_qty": ev.get("new_qty"),
+            "changed_at": dt,
+        })
+    if not norm_rows:
+        return None
 
-        is_restock = old_q == 0 and new_q is not None and new_q > 0
-        is_soldout = new_q == 0 and old_q is not None and old_q > 0
+    # шукаємо останній soldout (old>0 → new=0)
+    soldout_idx = None
+    for i in range(len(norm_rows) - 1, -1, -1):
+        ev = norm_rows[i]
+        old_q = ev["old_qty"]
+        new_q = ev["new_qty"]
+        if old_q is not None and new_q is not None and old_q > 0 and new_q == 0:
+            soldout_idx = i
+            break
 
-        if is_restock:
-            # починаємо новий цикл
-            pending_start = changed_dt
-            sold_amount = 0
-        elif pending_start is not None:
-            # всередині циклу: рахуємо всі зменшення
-            if old_q is not None and new_q is not None and new_q < old_q:
-                sold_amount += (old_q - new_q)
+    if soldout_idx is None:
+        return None  # ще не було soldout
 
-            if is_soldout:
-                duration = changed_dt - pending_start
-                if duration.total_seconds() > 0 and sold_amount > 0:
-                    last_cycle = {
-                        "restock_at": pending_start,
-                        "soldout_at": changed_dt,
-                        "sold_amount": sold_amount,
-                        "duration": duration,
-                    }
-                pending_start = None
-                sold_amount = 0
+    soldout_ev = norm_rows[soldout_idx]
 
-    return last_cycle
+    # шукаємо restock назад: 0→X
+    start_idx = None
+    for j in range(soldout_idx - 1, -1, -1):
+        ev = norm_rows[j]
+        old_q = ev["old_qty"]
+        new_q = ev["new_qty"]
+        if old_q == 0 and new_q is not None and new_q > 0:
+            start_idx = j
+            break
+
+    # якщо restock не знайдено — старт = перший запис
+    if start_idx is None:
+        start_idx = 0
+
+    start_ev = norm_rows[start_idx]
+
+    # рахуємо суму всіх зменшень між start_idx → soldout_idx включно
+    sold_amount = 0
+    for k in range(start_idx, soldout_idx + 1):
+        ev = norm_rows[k]
+        old_q = ev["old_qty"]
+        new_q = ev["new_qty"]
+        if old_q is not None and new_q is not None and new_q < old_q:
+            sold_amount += (old_q - new_q)
+
+    duration = soldout_ev["changed_at"] - start_ev["changed_at"]
+    if duration.total_seconds() <= 0 or sold_amount <= 0:
+        return None
+
+    return {
+        "restock_at": start_ev["changed_at"],
+        "soldout_at": soldout_ev["changed_at"],
+        "sold_amount": sold_amount,
+        "duration": duration,
+    }
 
 
 # TAB 3: Sold Out (Unique & Latest 10)
@@ -130,45 +156,45 @@ history_params = {
     "new_qty": "eq.0",
     "select": "product_id,changed_at",
     "order": "changed_at.desc",
-    "limit": "40"  # трохи з запасом, щоб набрати 10 унікальних
+    "limit": "40",  # з запасом, щоб набрати 10 унікальних
 }
 history_records = fetch_data("product_qty_history", history_params)
 
 sold_products = []
 if history_records:
-    unique_sold_map = {}
+    unique_sold_map: dict[str, str] = {}
     for rec in history_records:
-        p_id = rec['product_id']
+        p_id = rec["product_id"]
         if p_id not in unique_sold_map:
-            unique_sold_map[p_id] = rec['changed_at']
+            unique_sold_map[p_id] = rec["changed_at"]
         if len(unique_sold_map) >= 10:
             break
 
-    p_ids = ",".join([f"\"{pid}\"" for pid in unique_sold_map.keys()])
-    details = fetch_data(
-        "products",
-        {
-            "id": f"in.({p_ids})",
-            "select": "id,title,image,url,price,limit"
-        }
-    )
+    if unique_sold_map:
+        p_ids = ",".join([f"\"{pid}\"" for pid in unique_sold_map.keys()])
+        details = fetch_data(
+            "products",
+            {
+                "id": f"in.({p_ids})",
+                "select": "id,title,image,url,price,limit",
+            },
+        )
 
-    # збагачуємо кожен товар даними останнього циклу
-    for item in details:
-        pid = item["id"]
-        item['sold_at'] = unique_sold_map.get(pid)
+        for item in details:
+            pid = item["id"]
+            item["sold_at"] = unique_sold_map.get(pid)
 
-        cycle = compute_last_cycle_stats(pid)
-        if cycle:
-            item["sold_amount"] = cycle["sold_amount"]
-            item["sold_duration"] = fmt_duration(cycle["duration"])
-        else:
-            item["sold_amount"] = None
-            item["sold_duration"] = None
+            cycle = compute_last_cycle_stats(pid)
+            if cycle:
+                item["sold_amount"] = cycle["sold_amount"]
+                item["sold_duration"] = fmt_duration(cycle["duration"])
+            else:
+                item["sold_amount"] = None
+                item["sold_duration"] = None
 
-        sold_products.append(item)
+            sold_products.append(item)
 
-    sold_products.sort(key=lambda x: x.get('sold_at', ''), reverse=True)
+        sold_products.sort(key=lambda x: x.get("sold_at", ""), reverse=True)
 
 # 2. Render Template
 with open('template.html', 'r') as f:
