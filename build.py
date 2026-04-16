@@ -20,7 +20,16 @@ def fetch_data(endpoint, params=None):
 
 # TAB 1: Live Inventory
 # Note: Manual string to avoid library encoding issues with the comma
-live_url = f"{sb_url}/rest/v1/products?store=eq.mattel&is_active=eq.true&current_qty=gt.0&current_qty=lt.625&select=title,image,url,current_qty,price,updated_at,limit&order=current_qty.asc"
+live_url = (
+    f"{sb_url}/rest/v1/products"
+    f"?store=eq.mattel"
+    f"&is_active=eq.true"
+    f"&current_qty=gt.0"
+    f"&current_qty=lt.625"
+    f"&select=id,title,image,url,current_qty,price,updated_at,limit"
+    f"&order=current_qty.asc"
+)
+
 live_products = []
 try:
     res = requests.get(live_url, headers=headers)
@@ -32,9 +41,8 @@ except Exception as e:
 # TAB 2: Coming Soon
 soon_params = {
     "store": "eq.mattel",
-    # "is_active": "eq.true",
     "availability": "eq.Coming Soon",
-    "select": "title,image,url,current_qty,price,updated_at,limit",
+    "select": "id,title,image,url,current_qty,price,updated_at,limit",
     "order": "updated_at.desc"
 }
 coming_products = fetch_data("products", soon_params)
@@ -44,7 +52,7 @@ history_params = {
     "new_qty": "eq.0",
     "select": "product_id,changed_at",
     "order": "changed_at.desc",
-    "limit": "20" 
+    "limit": "20"
 }
 history_records = fetch_data("product_qty_history", history_params)
 
@@ -59,11 +67,15 @@ if history_records:
             break
 
     p_ids = ",".join([f"\"{pid}\"" for pid in unique_sold_map.keys()])
-    details = fetch_data("products", {"id": f"in.({p_ids})", "select": "id,title,image,url,price,limit"})
-    
+    details = fetch_data(
+        "products",
+        {"id": f"in.({p_ids})", "select": "id,title,image,url,price,limit"}
+    )
+
     for item in details:
         item['sold_at'] = unique_sold_map.get(item['id'])
         sold_products.append(item)
+
     sold_products.sort(key=lambda x: x.get('sold_at', ''), reverse=True)
 
 # 2. Render Template
@@ -74,7 +86,6 @@ html_output = template.render(
     live_products=live_products,
     coming_products=coming_products,
     sold_products=sold_products,
-    # Use ISO format for reliable JS parsing
     last_updated=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 )
 
