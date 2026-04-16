@@ -87,6 +87,21 @@
             </span>
         </div>
 
+        {% if mode == "sold" %}
+        <div class="flex items-center gap-2 mt-0.5">
+            {% if p.sold_duration %}
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    ⏱ {{ p.sold_duration }}
+                </span>
+            {% endif %}
+            {% if p.sold_amount %}
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    🔥 {{ p.sold_amount }} pcs
+                </span>
+            {% endif %}
+        </div>
+        {% endif %}
+
         <div class="flex items-center justify-between mt-auto">
             {% if mode == "live" %}
             <div class="flex items-baseline gap-1">
