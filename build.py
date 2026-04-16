@@ -51,17 +51,17 @@ coming_products = fetch_data("products", soon_params)
 def fmt_duration(td: timedelta) -> str:
     total = int(td.total_seconds())
     if total < 60:
-        return "<1 хв"
+        return "<1 min"
     minutes = total // 60
     hours = minutes // 60
     days = hours // 24
     parts = []
     if days:
-        parts.append(f"{days}day(s)")
+        parts.append(f"{days}d")
     if hours % 24:
-        parts.append(f"{hours % 24}hour(s)")
+        parts.append(f"{hours % 24}h")
     if minutes % 60:
-        parts.append(f"{minutes % 60}minute(s)")
+        parts.append(f"{minutes % 60}m")
     return " ".join(parts)
 
 
