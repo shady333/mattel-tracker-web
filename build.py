@@ -1,7 +1,7 @@
 import os
 import requests
 from jinja2 import Template
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # 1. Configuration
 sb_url = os.getenv('SUPABASE_URL')
@@ -48,11 +48,89 @@ soon_params = {
 coming_products = fetch_data("products", soon_params)
 
 # TAB 3: Sold Out (Unique & Latest 7)
+def fmt_duration(td: timedelta) -> str:
+    total = int(td.total_seconds())
+    if total < 60:
+        return "<1 хв"
+    minutes = total // 60
+    hours = minutes // 60
+    days = hours // 24
+    parts = []
+    if days:
+        parts.append(f"{days}д")
+    if hours % 24:
+        parts.append(f"{hours % 24}г")
+    if minutes % 60:
+        parts.append(f"{minutes % 60}хв")
+    return " ".join(parts)
+
+
+def compute_last_cycle_stats(product_id: str) -> dict | None:
+    """
+    Для одного product_id:
+    - тягнемо всю history по ньому
+    - знаходимо останній закритий цикл: restock → soldout
+    - рахуємо:
+        - sold_amount = сума всіх зменшень qty між restock і soldout
+        - duration = soldout_at - restock_at
+    Повертає dict або None, якщо циклу немає.
+    """
+    rows = fetch_data(
+        "product_qty_history",
+        {
+            "product_id": f"eq.{product_id}",
+            "select": "old_qty,new_qty,changed_at",
+            "order": "changed_at.asc",
+        },
+    )
+    if not rows:
+        return None
+
+    pending_start = None
+    sold_amount = 0
+    last_cycle = None
+
+    for ev in rows:
+        old_q = ev.get("old_qty")
+        new_q = ev.get("new_qty")
+        changed_at = ev.get("changed_at")
+        if changed_at is None:
+            continue
+        changed_dt = datetime.fromisoformat(changed_at.replace("Z", "+00:00"))
+
+        is_restock = old_q == 0 and new_q is not None and new_q > 0
+        is_soldout = new_q == 0 and old_q is not None and old_q > 0
+
+        if is_restock:
+            # починаємо новий цикл
+            pending_start = changed_dt
+            sold_amount = 0
+        elif pending_start is not None:
+            # всередині циклу: рахуємо всі зменшення
+            if old_q is not None and new_q is not None and new_q < old_q:
+                sold_amount += (old_q - new_q)
+
+            if is_soldout:
+                duration = changed_dt - pending_start
+                if duration.total_seconds() > 0 and sold_amount > 0:
+                    last_cycle = {
+                        "restock_at": pending_start,
+                        "soldout_at": changed_dt,
+                        "sold_amount": sold_amount,
+                        "duration": duration,
+                    }
+                pending_start = None
+                sold_amount = 0
+
+    return last_cycle
+
+
+# TAB 3: Sold Out (Unique & Latest 10)
 history_params = {
     "new_qty": "eq.0",
     "select": "product_id,changed_at",
     "order": "changed_at.desc",
-    "limit": "20"
+    "limit": "40"  # трохи з запасом, щоб набрати 10 унікальних
 }
 history_records = fetch_data("product_qty_history", history_params)
 
@@ -63,17 +141,31 @@ if history_records:
         p_id = rec['product_id']
         if p_id not in unique_sold_map:
             unique_sold_map[p_id] = rec['changed_at']
-        if len(unique_sold_map) >= 7:
+        if len(unique_sold_map) >= 10:
             break
 
     p_ids = ",".join([f"\"{pid}\"" for pid in unique_sold_map.keys()])
     details = fetch_data(
         "products",
-        {"id": f"in.({p_ids})", "select": "id,title,image,url,price,limit"}
+        {
+            "id": f"in.({p_ids})",
+            "select": "id,title,image,url,price,limit"
+        }
     )
 
+    # збагачуємо кожен товар даними останнього циклу
     for item in details:
-        item['sold_at'] = unique_sold_map.get(item['id'])
+        pid = item["id"]
+        item['sold_at'] = unique_sold_map.get(pid)
+
+        cycle = compute_last_cycle_stats(pid)
+        if cycle:
+            item["sold_amount"] = cycle["sold_amount"]
+            item["sold_duration"] = fmt_duration(cycle["duration"])
+        else:
+            item["sold_amount"] = None
+            item["sold_duration"] = None
+
         sold_products.append(item)
 
     sold_products.sort(key=lambda x: x.get('sold_at', ''), reverse=True)
