@@ -57,11 +57,11 @@ def fmt_duration(td: timedelta) -> str:
     days = hours // 24
     parts = []
     if days:
-        parts.append(f"{days}д")
+        parts.append(f"{days}day(s)")
     if hours % 24:
-        parts.append(f"{hours % 24}г")
+        parts.append(f"{hours % 24}hour(s)")
     if minutes % 60:
-        parts.append(f"{minutes % 60}хв")
+        parts.append(f"{minutes % 60}minute(s)")
     return " ".join(parts)
 
 
