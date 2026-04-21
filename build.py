@@ -147,7 +147,7 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
         return None
 
     # Якщо початкова кількість була 625 — реальна кількість невідома
-    is_exact = (cycle_start_qty < MAX_SHOPIFY_QTY)
+    is_exact = (cycle_start_qty < MAX_SHOPIFY_QTY) if cycle_start_qty is not None else False
 
     return {
         "restock_at": start_ev["changed_at"],
