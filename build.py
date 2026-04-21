@@ -112,11 +112,17 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     for j in range(soldout_idx - 1, -1, -1):
         ev = norm_rows[j]
         old_q, new_q = ev["old_qty"], ev["new_qty"]
+        # Справжній restock з нуля
         if old_q == 0 and new_q is not None and new_q > 0:
             start_idx = j
             break
-        if old_q is not None and new_q == 0:
+        # Попередній soldout — межа циклу
+        if old_q is not None and new_q is not None and new_q == 0:
             start_idx = j + 1
+            break
+        # Додавання товару (old>0 → new>old) — теж початок нового мікро-циклу
+        if old_q is not None and new_q is not None and new_q > old_q:
+            start_idx = j
             break
 
     start_ev = norm_rows[start_idx]
