@@ -193,10 +193,16 @@ if history_records:
 
             cycle = compute_last_cycle_stats(pid)
             if cycle:
-                item["sold_amount"] = cycle["sold_amount"]
+                sold_amount = cycle["sold_amount"]
+                is_exact = cycle["sold_amount_exact"]
+                item["sold_amount"] = sold_amount if is_exact else None
+                item["sold_amount_min"] = None if is_exact else sold_amount  # нижня межа для "500+"
+                item["sold_amount_exact"] = is_exact
                 item["sold_duration"] = fmt_duration(cycle["duration"])
             else:
                 item["sold_amount"] = None
+                item["sold_amount_min"] = None
+                item["sold_amount_exact"] = None
                 item["sold_duration"] = None
 
             sold_products.append(item)
