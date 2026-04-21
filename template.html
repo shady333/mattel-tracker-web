@@ -96,9 +96,13 @@
                     ⏱ {{ p.sold_duration }}
                 </span>
             {% endif %}
-            {% if p.sold_amount %}
+            {% if p.sold_amount_exact and p.sold_amount %}
                 <span class="text-[8px] text-gray-500 font-bold uppercase">
                     🔥 {{ p.sold_amount }} pcs
+                </span>
+            {% elif not p.sold_amount_exact and p.sold_amount_min %}
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    🔥 {{ p.sold_amount_min }}+ pcs
                 </span>
             {% endif %}
         </div>
