@@ -93,7 +93,7 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     if not norm_rows:
         return None
 
-    # Шукаємо останній soldout (old>0 → new=0)
+    # Знаходимо останній soldout (old>0 → new=0)
     soldout_idx = None
     for i in range(len(norm_rows) - 1, -1, -1):
         ev = norm_rows[i]
@@ -105,61 +105,44 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     if soldout_idx is None:
         return None
 
-    soldout_ev = norm_rows[soldout_idx]
-
-    # Шукаємо початок циклу
+    # Знаходимо початок циклу — останній restock з нуля перед soldout
     start_idx = 0
     for j in range(soldout_idx - 1, -1, -1):
         ev = norm_rows[j]
         old_q, new_q = ev["old_qty"], ev["new_qty"]
-        # Справжній restock з нуля
         if old_q == 0 and new_q is not None and new_q > 0:
             start_idx = j
             break
-        # Попередній soldout — межа циклу
         if old_q is not None and new_q is not None and new_q == 0:
             start_idx = j + 1
             break
-        # Додавання товару (old>0 → new>old) — теж початок нового мікро-циклу
-        if old_q is not None and new_q is not None and new_q > old_q:
-            start_idx = j
-            break
 
-    start_ev = norm_rows[start_idx]
-
-    # Визначаємо початкову кількість циклу
-    # Якщо старт — restock (0→X), беремо new_qty
-    # Якщо старт — перший запис в БД, беремо old_qty (бо не знаємо скільки було до нього)
-    start_new_q = start_ev["new_qty"]
-    start_old_q = start_ev["old_qty"]
-
-    if start_old_q == 0:
-        # restock: початкова кількість = new_qty рестоку
-        cycle_start_qty = start_new_q
-    else:
-        # перший запис в БД: old_qty — це перше відоме значення
-        cycle_start_qty = start_old_q
-
-    # Рахуємо sold_amount: тільки зменшення qty
+    # Рахуємо sold_amount і перевіряємо чи було 625 в циклі
     sold_amount = 0
+    had_max_qty = False
+
     for k in range(start_idx, soldout_idx + 1):
         ev = norm_rows[k]
         old_q, new_q = ev["old_qty"], ev["new_qty"]
+        if old_q is not None and old_q >= MAX_SHOPIFY_QTY:
+            had_max_qty = True
+        if new_q is not None and new_q >= MAX_SHOPIFY_QTY:
+            had_max_qty = True
         if old_q is not None and new_q is not None and new_q < old_q:
             sold_amount += (old_q - new_q)
 
+    soldout_ev = norm_rows[soldout_idx]
+    start_ev = norm_rows[start_idx]
     duration = soldout_ev["changed_at"] - start_ev["changed_at"]
+
     if duration.total_seconds() <= 0 or sold_amount <= 0:
         return None
-
-    # Якщо початкова кількість була 625 — реальна кількість невідома
-    is_exact = (cycle_start_qty < MAX_SHOPIFY_QTY) if cycle_start_qty is not None else False
 
     return {
         "restock_at": start_ev["changed_at"],
         "soldout_at": soldout_ev["changed_at"],
         "sold_amount": sold_amount,
-        "sold_amount_exact": is_exact,  # False = показувати "500+"
+        "is_exact": not had_max_qty,  # True = точно, False = "X+"
         "duration": duration,
     }
 
@@ -200,16 +183,14 @@ if history_records:
             cycle = compute_last_cycle_stats(pid)
             if cycle:
                 sold_amount = cycle["sold_amount"]
-                is_exact = cycle["sold_amount_exact"]
-                item["sold_amount"] = sold_amount if is_exact else None
-                item["sold_amount_min"] = None if is_exact else sold_amount  # нижня межа для "500+"
+                is_exact = cycle["is_exact"]
+                item["sold_amount"] = sold_amount
                 item["sold_amount_exact"] = is_exact
                 item["sold_duration"] = fmt_duration(cycle["duration"])
             else:
                 item["sold_amount"] = None
-                item["sold_amount_min"] = None
                 item["sold_amount_exact"] = None
-                item["sold_duration"] = None
+                item["sold_duration"] = None    
 
             sold_products.append(item)
 
