@@ -105,31 +105,28 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     if soldout_idx is None:
         return None
 
-    # Знаходимо початок циклу — останній restock з нуля перед soldout
-    start_idx = 0
-    for j in range(soldout_idx - 1, -1, -1):
-        ev = norm_rows[j]
-        old_q, new_q = ev["old_qty"], ev["new_qty"]
-        if old_q == 0 and new_q is not None and new_q > 0:
-            start_idx = j
-            break
-        if old_q is not None and new_q is not None and new_q == 0:
-            start_idx = j + 1
-            break
-
-    # Рахуємо sold_amount і перевіряємо чи було 625 в циклі
+    # Йдемо назад від soldout, рахуємо продажі
+    # Зупиняємось на old_qty == 0, NULL, або початку масиву
     sold_amount = 0
     had_max_qty = False
+    start_idx = 0
 
-    for k in range(start_idx, soldout_idx + 1):
-        ev = norm_rows[k]
+    for j in range(soldout_idx, -1, -1):
+        ev = norm_rows[j]
         old_q, new_q = ev["old_qty"], ev["new_qty"]
-        if old_q is not None and old_q >= MAX_SHOPIFY_QTY:
+
+        # Межа циклу — restock з нуля або перший запис в БД
+        if old_q is None or old_q == 0:
+            start_idx = j
+            break
+
+        if old_q >= MAX_SHOPIFY_QTY:
             had_max_qty = True
-        if new_q is not None and new_q >= MAX_SHOPIFY_QTY:
-            had_max_qty = True
-        if old_q is not None and new_q is not None and new_q < old_q:
+
+        if new_q is not None and old_q is not None and new_q < old_q:
             sold_amount += (old_q - new_q)
+
+        start_idx = j  # якщо дійшли до початку масиву
 
     soldout_ev = norm_rows[soldout_idx]
     start_ev = norm_rows[start_idx]
@@ -142,7 +139,7 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
         "restock_at": start_ev["changed_at"],
         "soldout_at": soldout_ev["changed_at"],
         "sold_amount": sold_amount,
-        "is_exact": not had_max_qty,  # True = точно, False = "X+"
+        "is_exact": not had_max_qty,
         "duration": duration,
     }
 
