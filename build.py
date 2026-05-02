@@ -3,6 +3,9 @@ import requests
 from jinja2 import Template
 from datetime import datetime, timedelta
 
+MIN_VALID_YEAR = 2024
+MAX_SHOPIFY_QTY = 625
+
 # 1. Configuration
 sb_url = os.getenv('SUPABASE_URL')
 sb_key = os.getenv('SUPABASE_KEY')
@@ -79,67 +82,72 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     if not rows:
         return None
 
+    # Парсимо і фільтруємо невалідні дати
     norm_rows = []
     for ev in rows:
         changed_at = ev.get("changed_at")
         if not changed_at:
             continue
         dt = datetime.fromisoformat(changed_at.replace("Z", "+00:00"))
+        if dt.year < MIN_VALID_YEAR:
+            continue
         norm_rows.append({
             "old_qty": ev.get("old_qty"),
             "new_qty": ev.get("new_qty"),
             "changed_at": dt,
         })
+
     if not norm_rows:
         return None
 
-    # Знаходимо останній soldout (old>0 → new=0)
-    soldout_idx = None
-    for i in range(len(norm_rows) - 1, -1, -1):
-        ev = norm_rows[i]
+    def is_restock(ev: dict) -> bool:
         old_q, new_q = ev["old_qty"], ev["new_qty"]
-        if old_q is not None and new_q is not None and old_q > 0 and new_q == 0:
-            soldout_idx = i
+        if new_q is None or new_q <= 0:
+            return False
+        if old_q is None or old_q == 0:          # restock з нуля / перший запис
+            return True
+        if new_q >= MAX_SHOPIFY_QTY and new_q > old_q:  # поповнення посередині
+            return True
+        return False
+
+    def is_soldout(ev: dict) -> bool:
+        old_q, new_q = ev["old_qty"], ev["new_qty"]
+        return (old_q is not None and old_q > 0
+                and new_q is not None and new_q == 0)
+
+    # Рахуємо всі restocks
+    restock_events = [ev for ev in norm_rows if is_restock(ev)]
+    total_restocks = len(restock_events)
+
+    # Знаходимо останній soldout
+    last_soldout = None
+    for ev in reversed(norm_rows):
+        if is_soldout(ev):
+            last_soldout = ev
             break
 
-    if soldout_idx is None:
+    if last_soldout is None or total_restocks == 0:
         return None
 
-    # Йдемо назад від soldout, рахуємо продажі
-    # Зупиняємось на old_qty == 0, NULL, або початку масиву
-    sold_amount = 0
-    had_max_qty = False
-    start_idx = 0
-
-    for j in range(soldout_idx, -1, -1):
-        ev = norm_rows[j]
-        old_q, new_q = ev["old_qty"], ev["new_qty"]
-
-        # Межа циклу — restock з нуля або перший запис в БД
-        if old_q is None or old_q == 0:
-            start_idx = j
+    # Знаходимо останній restock ДО цього soldout
+    last_restock = None
+    for ev in reversed(restock_events):
+        if ev["changed_at"] < last_soldout["changed_at"]:
+            last_restock = ev
             break
 
-        if old_q >= MAX_SHOPIFY_QTY:
-            had_max_qty = True
+    if last_restock is None:
+        return None
 
-        if new_q is not None and old_q is not None and new_q < old_q:
-            sold_amount += (old_q - new_q)
+    duration = last_soldout["changed_at"] - last_restock["changed_at"]
 
-        start_idx = j  # якщо дійшли до початку масиву
-
-    soldout_ev = norm_rows[soldout_idx]
-    start_ev = norm_rows[start_idx]
-    duration = soldout_ev["changed_at"] - start_ev["changed_at"]
-
-    if duration.total_seconds() <= 0 or sold_amount <= 0:
+    if duration.total_seconds() <= 0:
         return None
 
     return {
-        "restock_at": start_ev["changed_at"],
-        "soldout_at": soldout_ev["changed_at"],
-        "sold_amount": sold_amount,
-        "is_exact": not had_max_qty,
+        "restock_at": last_restock["changed_at"],
+        "soldout_at": last_soldout["changed_at"],
+        "total_restocks": total_restocks,
         "duration": duration,
     }
 
@@ -179,14 +187,10 @@ if history_records:
 
             cycle = compute_last_cycle_stats(pid)
             if cycle:
-                sold_amount = cycle["sold_amount"]
-                is_exact = cycle["is_exact"]
-                item["sold_amount"] = sold_amount
-                item["sold_amount_exact"] = is_exact
+                item["total_restocks"] = cycle["total_restocks"]
                 item["sold_duration"] = fmt_duration(cycle["duration"])
             else:
-                item["sold_amount"] = None
-                item["sold_amount_exact"] = None
+                item["total_restocks"] = None
                 item["sold_duration"] = None    
 
             sold_products.append(item)
