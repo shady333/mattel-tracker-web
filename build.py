@@ -136,8 +136,14 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
             last_restock = ev
             break
 
+    # ← НОВИЙ FALLBACK: якщо restock не знайдено,
+    # беремо перший валідний запис як початок циклу
     if last_restock is None:
-        return None
+        first_ev = norm_rows[0]
+        if first_ev["changed_at"] < last_soldout["changed_at"]:
+            last_restock = first_ev
+        else:
+            return None
 
     duration = last_soldout["changed_at"] - last_restock["changed_at"]
 
@@ -147,7 +153,7 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     return {
         "restock_at": last_restock["changed_at"],
         "soldout_at": last_soldout["changed_at"],
-        "total_restocks": total_restocks,
+        "total_restocks": total_restocks,  # буде 0 для цього кейсу
         "duration": duration,
     }
 
