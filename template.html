@@ -94,14 +94,14 @@
         
         {% if mode == "sold" %}
         <div class="flex items-center gap-2 mt-0.5">
+            {% if p.total_restocks %}
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    🔄 {{ p.total_restocks }} restock{{ 's' if p.total_restocks > 1 else '' }}
+                </span>
+            {% endif %}
             {% if p.sold_duration %}
                 <span class="text-[8px] text-gray-500 font-bold uppercase">
                     ⏱ {{ p.sold_duration }}
-                </span>
-            {% endif %}
-            {% if p.sold_amount %}
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    🔥 {{ p.sold_amount }}{% if not p.sold_amount_exact %}+{% endif %} pcs
                 </span>
             {% endif %}
         </div>
