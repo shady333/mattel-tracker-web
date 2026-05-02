@@ -32,6 +32,71 @@
 
 <body class="bg-gray-50 pb-10 font-sans text-gray-900 text-left">
 
+<!-- Splash Screen -->
+<div id="splash" class="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4">
+
+        <div class="text-center space-y-1">
+            <h2 class="text-lg font-black text-red-600 uppercase italic tracking-tight">Keep dGarage alive 🔥</h2>
+            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Free tool, real costs</p>
+        </div>
+
+        <p class="text-[13px] text-gray-700 font-medium leading-relaxed text-center">
+            dGarage runs on personal time and money. If you find it useful — I'd appreciate your support to keep it running.
+        </p>
+
+        <div class="space-y-2">
+            <a href="https://www.instagram.com/dgarage_ua/"
+               target="_blank"
+               onclick="trackEvent('splash_support_click', { source: 'instagram' })"
+               class="block w-full text-center bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white font-black text-[11px] uppercase tracking-widest py-3 rounded-2xl shadow-md active:scale-95 transition-all">
+                💬 Support via Instagram DM
+            </a>
+            <a href="https://discord.gg/u3Z9nJB6JF"
+               target="_blank"
+               onclick="trackEvent('splash_support_click', { source: 'discord' })"
+               class="block w-full text-center bg-[#5865F2] text-white font-black text-[11px] uppercase tracking-widest py-3 rounded-2xl shadow-md active:scale-95 transition-all">
+                🇺🇦 Support via Discord
+            </a>
+            <button onclick="closeSplash()"
+                    class="block w-full text-center text-gray-400 font-bold text-[10px] uppercase tracking-widest py-2 active:scale-95 transition-all">
+                Maybe later
+            </button>
+        </div>
+
+        <p class="text-[9px] text-gray-300 font-bold uppercase text-center tracking-widest">
+            Shown once every 7 days
+        </p>
+    </div>
+</div>
+
+<script>
+    const SPLASH_KEY = 'dgarage_splash_shown';
+    const SPLASH_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 днів
+
+    function closeSplash() {
+        document.getElementById('splash').classList.add('hidden');
+        localStorage.setItem(SPLASH_KEY, Date.now());
+        trackEvent('splash_dismissed');
+    }
+
+    function initSplash() {
+        const last = localStorage.getItem(SPLASH_KEY);
+        const shouldShow = !last || (Date.now() - parseInt(last)) > SPLASH_INTERVAL;
+        if (shouldShow) {
+            document.getElementById('splash').classList.remove('hidden');
+            trackEvent('splash_shown');
+        }
+    }
+
+    // Закриття по кліку на фон
+    document.getElementById('splash').addEventListener('click', function(e) {
+        if (e.target === this) closeSplash();
+    });
+
+    initSplash();
+</script>
+
 <script>
     trackEvent('app_opened', { timestamp: Date.now() });
 </script>
