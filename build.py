@@ -98,13 +98,23 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     if not norm_rows:
         return None
 
-    def is_restock(ev: dict) -> bool:
+    def is_restock(ev: dict, prev_ev: dict | None) -> bool:
         old_q, new_q = ev["old_qty"], ev["new_qty"]
         if new_q is None or new_q <= 0:
             return False
+        # Явний restock з нуля або перший запис в БД
         if old_q is None or old_q == 0:
             return True
+        # Явний restock посередині: qty виросла до максимуму
         if new_q >= MAX_SHOPIFY_QTY and new_q > old_q:
+            return True
+        # Implicit restock: перший валідний запис після фільтрації невалідних,
+        # і він починається з максимальної кількості
+        if prev_ev is None and old_q >= MAX_SHOPIFY_QTY:
+            return True
+        # Implicit restock: попередній запис був soldout (new_qty=0),
+        # але запис restock відсутній в БД
+        if prev_ev is not None and prev_ev["new_qty"] == 0 and old_q > 0:
             return True
         return False
 
@@ -113,8 +123,13 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
         return (old_q is not None and old_q > 0
                 and new_q is not None and new_q == 0)
 
-    # Рахуємо всі restocks
-    restock_events = [ev for ev in norm_rows if is_restock(ev)]
+    # Збираємо restock події з урахуванням попереднього запису
+    restock_events = []
+    for i, ev in enumerate(norm_rows):
+        prev = norm_rows[i - 1] if i > 0 else None
+        if is_restock(ev, prev):
+            restock_events.append(ev)
+
     total_restocks = len(restock_events)
 
     # Знаходимо останній soldout
