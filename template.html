@@ -22,7 +22,6 @@
       gtag('js', new Date());
       gtag('config', 'G-QPNFB5HBHK');
 
-      // GA wrapper
       function trackEvent(name, params = {}) {
         if (typeof gtag === "function") {
             gtag('event', name, params);
@@ -34,7 +33,6 @@
 <body class="bg-gray-50 pb-10 font-sans text-gray-900 text-left">
 
 <script>
-    // Track app open
     trackEvent('app_opened', { timestamp: Date.now() });
 </script>
 
@@ -53,10 +51,10 @@
         <a href="https://discord.gg/ZbzRhfuH7n" target="_blank" class="bg-[#5865F2] p-3 rounded-2xl text-white shadow-sm active:scale-95 transition truncate text-xs font-black italic">🇺🇦 Discord →</a>
         <a href="https://discord.gg/u3Z9nJB6JF" target="_blank" class="bg-gray-800 p-3 rounded-2xl text-white shadow-sm active:scale-95 transition truncate text-xs font-black italic">💬 Alerts →</a>
     </div>
-        <a href="https://www.instagram.com/dgarage_ua/" target="_blank" class="bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] p-4 rounded-2xl text-white shadow-sm active:scale-95 transition flex flex-col items-start gap-1">
-            <span class="text-[10px] font-black uppercase opacity-80 italic">Get VIP Access</span>
-            <span class="text-sm font-black uppercase italic">Instagram DM →</span>
-        </a>
+    <a href="https://www.instagram.com/dgarage_ua/" target="_blank" class="bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] p-4 rounded-2xl text-white shadow-sm active:scale-95 transition flex flex-col items-start gap-1">
+        <span class="text-[10px] font-black uppercase opacity-80 italic">Get VIP Access</span>
+        <span class="text-sm font-black uppercase italic">Instagram DM →</span>
+    </a>
 </section>
 
 <nav class="sticky top-[72px] z-40 bg-white border-b border-gray-100 flex justify-around shadow-sm">
@@ -91,17 +89,17 @@
                 Loading...
             </span>
         </div>
-        
+
         {% if mode == "sold" %}
         <div class="flex items-center gap-2 mt-0.5">
-            {% if p.total_restocks %}
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    🔄 {{ p.total_restocks }} restock{{ 's' if p.total_restocks > 1 else '' }}
-                </span>
-            {% endif %}
             {% if p.sold_duration %}
                 <span class="text-[8px] text-gray-500 font-bold uppercase">
                     ⏱ {{ p.sold_duration }}
+                </span>
+            {% endif %}
+            {% if p.total_restocks is not none %}
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    🔄 {{ p.total_restocks }} restock{{ 's' if p.total_restocks != 1 else '' }}
                 </span>
             {% endif %}
         </div>
@@ -184,17 +182,14 @@
 </footer>
 
 <script>
-/* ---------- GA helper ---------- */
 function trackEvent(name, params = {}) {
     if (typeof gtag === "function") {
         gtag('event', name, params);
     }
 }
 
-/* ---------- App opened ---------- */
 trackEvent('app_opened', { timestamp: Date.now() });
 
-/* ---------- Tabs ---------- */
 function switchTab(tab) {
     document.querySelectorAll('.tab-section').forEach(s => s.classList.add('hidden'));
     document.getElementById('section-' + tab).classList.remove('hidden');
@@ -209,25 +204,21 @@ function switchTab(tab) {
     activeBtn.classList.remove('text-gray-400');
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
     trackEvent('tab_switch', { tab });
 }
 
-/* ---------- Manual refresh ---------- */
 function forceRefresh() {
     trackEvent('manual_refresh');
     localStorage.setItem('last_refresh', Date.now());
     location.href = location.href;
 }
 
-/* ---------- Date formatting ---------- */
 function formatDates() {
     const options = { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false };
 
     document.querySelectorAll('.product-time').forEach(el => {
         const utc = el.dataset.utc;
         if (!utc || utc === 'None') return;
-
         const date = new Date(utc);
         const mode = el.dataset.mode;
         el.innerText = (mode === 'sold' ? 'Sold: ' : 'Upd: ') + date.toLocaleString('en-US', options);
@@ -242,7 +233,6 @@ function formatDates() {
     }
 }
 
-/* ---------- PWA logic ---------- */
 let deferredPrompt;
 const installBtn = document.getElementById('installBtn');
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -272,7 +262,6 @@ if (isIOS && !isStandalone) {
     };
 }
 
-/* ---------- Scroll depth tracking ---------- */
 let maxScrollPercent = 0;
 const scrollMilestones = new Set();
 
@@ -283,9 +272,7 @@ function trackScrollDepth() {
     if (scrollHeight <= 0) return;
 
     const percent = Math.round((scrollTop / scrollHeight) * 100);
-    if (percent > maxScrollPercent) {
-        maxScrollPercent = percent;
-    }
+    if (percent > maxScrollPercent) maxScrollPercent = percent;
 
     [25, 50, 75, 100].forEach(mark => {
         if (percent >= mark && !scrollMilestones.has(mark)) {
@@ -296,7 +283,6 @@ function trackScrollDepth() {
 }
 
 window.addEventListener('scroll', () => {
-    // throttle via requestAnimationFrame
     if (!window.__scrollTicking) {
         window.__scrollTicking = true;
         requestAnimationFrame(() => {
@@ -306,7 +292,6 @@ window.addEventListener('scroll', () => {
     }
 });
 
-/* ---------- Time in app / tab ---------- */
 let sessionStart = Date.now();
 let visibleStart = document.visibilityState === 'visible' ? Date.now() : null;
 let accumulatedVisibleMs = 0;
@@ -329,15 +314,13 @@ window.addEventListener('beforeunload', () => {
         accumulatedVisibleMs += Date.now() - visibleStart;
         visibleStart = null;
     }
-    const totalMs = Date.now() - sessionStart;
     trackEvent('session_summary', {
-        total_ms: totalMs,
+        total_ms: Date.now() - sessionStart,
         visible_ms: accumulatedVisibleMs,
         max_scroll_percent: maxScrollPercent
     });
 });
 
-/* ---------- Auto-refresh on return (15 min) ---------- */
 document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === 'visible') {
         const last = localStorage.getItem('last_refresh');
@@ -347,38 +330,24 @@ document.addEventListener("visibilitychange", () => {
     }
 });
 
-/* ---------- Online / Offline ---------- */
-window.addEventListener('online', () => {
-    trackEvent('connection_status', { status: 'online' });
-});
+window.addEventListener('online', () => trackEvent('connection_status', { status: 'online' }));
+window.addEventListener('offline', () => trackEvent('connection_status', { status: 'offline' }));
 
-window.addEventListener('offline', () => {
-    trackEvent('connection_status', { status: 'offline' });
-});
-
-/* ---------- Click heatmap (легкий варіант) ---------- */
 document.addEventListener('click', (e) => {
     try {
         const target = e.target.closest('[data-heatmap]') || e.target;
         const rect = target.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width;
-        const y = (e.clientY - rect.top) / rect.height;
-
         trackEvent('click_heatmap', {
             tag: target.tagName,
             text: (target.innerText || '').slice(0, 40),
-            x_rel: Number(x.toFixed(3)),
-            y_rel: Number(y.toFixed(3))
+            x_rel: Number(((e.clientX - rect.left) / rect.width).toFixed(3)),
+            y_rel: Number(((e.clientY - rect.top) / rect.height).toFixed(3))
         });
-    } catch (_) {
-        // не чіпаємо, якщо щось пішло не так
-    }
+    } catch (_) {}
 });
 
-/* ---------- Init ---------- */
 formatDates();
 </script>
-
 
 </body>
 </html>
