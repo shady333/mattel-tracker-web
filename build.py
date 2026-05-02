@@ -3,9 +3,6 @@ import requests
 from jinja2 import Template
 from datetime import datetime, timedelta
 
-MIN_VALID_YEAR = 2024
-MAX_SHOPIFY_QTY = 625
-
 # 1. Configuration
 sb_url = os.getenv('SUPABASE_URL')
 sb_key = os.getenv('SUPABASE_KEY')
@@ -22,7 +19,6 @@ def fetch_data(endpoint, params=None):
         return []
 
 # TAB 1: Live Inventory
-# Note: Manual string to avoid library encoding issues with the comma
 live_url = (
     f"{sb_url}/rest/v1/products"
     f"?store=eq.mattel"
@@ -50,7 +46,7 @@ soon_params = {
 }
 coming_products = fetch_data("products", soon_params)
 
-# TAB 3: Sold Out (Unique & Latest 7)
+# Helpers
 def fmt_duration(td: timedelta) -> str:
     total = int(td.total_seconds())
     if total < 60:
@@ -68,7 +64,9 @@ def fmt_duration(td: timedelta) -> str:
     return " ".join(parts)
 
 
+MIN_VALID_YEAR = 2024
 MAX_SHOPIFY_QTY = 625
+
 
 def compute_last_cycle_stats(product_id: str) -> dict | None:
     rows = fetch_data(
@@ -104,9 +102,9 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
         old_q, new_q = ev["old_qty"], ev["new_qty"]
         if new_q is None or new_q <= 0:
             return False
-        if old_q is None or old_q == 0:          # restock з нуля / перший запис
+        if old_q is None or old_q == 0:
             return True
-        if new_q >= MAX_SHOPIFY_QTY and new_q > old_q:  # поповнення посередині
+        if new_q >= MAX_SHOPIFY_QTY and new_q > old_q:
             return True
         return False
 
@@ -126,7 +124,7 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
             last_soldout = ev
             break
 
-    if last_soldout is None or total_restocks == 0:
+    if last_soldout is None:
         return None
 
     # Знаходимо останній restock ДО цього soldout
@@ -136,8 +134,7 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
             last_restock = ev
             break
 
-    # ← НОВИЙ FALLBACK: якщо restock не знайдено,
-    # беремо перший валідний запис як початок циклу
+    # Fallback: якщо restock не знайдено — беремо перший запис в БД
     if last_restock is None:
         first_ev = norm_rows[0]
         if first_ev["changed_at"] < last_soldout["changed_at"]:
@@ -153,7 +150,7 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     return {
         "restock_at": last_restock["changed_at"],
         "soldout_at": last_soldout["changed_at"],
-        "total_restocks": total_restocks,  # буде 0 для цього кейсу
+        "total_restocks": total_restocks,
         "duration": duration,
     }
 
@@ -163,7 +160,7 @@ history_params = {
     "new_qty": "eq.0",
     "select": "product_id,changed_at",
     "order": "changed_at.desc",
-    "limit": "40",  # з запасом, щоб набрати 10 унікальних
+    "limit": "40",
 }
 history_records = fetch_data("product_qty_history", history_params)
 
@@ -197,7 +194,7 @@ if history_records:
                 item["sold_duration"] = fmt_duration(cycle["duration"])
             else:
                 item["total_restocks"] = None
-                item["sold_duration"] = None    
+                item["sold_duration"] = None
 
             sold_products.append(item)
 
