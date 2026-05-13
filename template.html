@@ -33,16 +33,39 @@
 <body class="bg-gray-50 pb-10 font-sans text-gray-900 text-left">
 
 <!-- Splash Screen -->
+<div id="login-modal" class="fixed inset-0 z-[9997] bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4">
+        <div class="text-center space-y-1">
+            <h2 class="text-lg font-black text-red-600 uppercase italic tracking-tight">dGarage</h2>
+            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Scale Diecast Tracker</p>
+        </div>
+
+        <input id="login-input" type="password" placeholder="Enter VIP passcode..."
+               class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-400"/>
+        <p id="login-error" class="text-[11px] text-red-500 font-bold text-center hidden">Wrong passcode. Try again.</p>
+
+        <div class="space-y-2">
+            <button onclick="attemptLogin()"
+                    class="block w-full text-center bg-red-600 text-white font-black text-[11px] uppercase tracking-widest py-3 rounded-2xl active:scale-95 transition-all">
+                Login
+            </button>
+            <button onclick="continueAsGuest()"
+                    class="block w-full text-center text-gray-400 font-bold text-[10px] uppercase tracking-widest py-2 active:scale-95 transition-all">
+                Continue as Guest
+            </button>
+        </div>
+    </div>
+</div>
 <div id="splash" class="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4">
 
         <div class="text-center space-y-1">
-            <h2 class="text-lg font-black text-red-600 uppercase italic tracking-tight">Keep dGarage alive 🔥</h2>
+            <h2 class="text-lg font-black text-red-600 uppercase italic tracking-tight">Keep DGarage alive 🔥</h2>
             <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Free tool, real costs</p>
         </div>
 
         <p class="text-[13px] text-gray-700 font-medium leading-relaxed text-center">
-            dGarage runs on personal time and money. If you find it useful — I'd appreciate your support to keep it running.
+            DGarage runs on personal time and money. If you find it useful — I'd appreciate your support to keep it running.
         </p>
 
         <div class="space-y-2">
@@ -172,7 +195,7 @@
 
         <div class="flex items-center justify-between mt-auto">
             {% if mode == "live" %}
-            <div class="flex items-baseline gap-1">
+            <div class="flex items-baseline gap-1 vip-units transition-all duration-300">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none">{{ p.current_qty }}</span>
                 <span class="text-[8px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
             </div>
@@ -215,7 +238,26 @@
     <div class="px-1 mb-1">
         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Upcoming Releases</span>
     </div>
-    {% for p in coming_products %} {{ render_card(p, "soon") }} {% endfor %}
+
+    <!-- Guest: blurred content with unlock prompt -->
+    <div id="soon-lock" class="relative">
+        <div class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 py-10">
+            <span class="text-4xl">🔒</span>
+            <p class="text-[11px] font-black uppercase tracking-widest text-gray-700">VIP Access Only</p>
+            <button onclick="showLoginModal()"
+                    class="bg-red-600 text-white text-[10px] font-black uppercase tracking-widest px-5 py-2.5 rounded-2xl active:scale-95 transition-all shadow-md">
+                Enter Passcode
+            </button>
+        </div>
+        <div class="blur-sm pointer-events-none select-none grid gap-3">
+            {% for p in coming_products %} {{ render_card(p, "soon") }} {% endfor %}
+        </div>
+    </div>
+
+    <!-- VIP: full content -->
+    <div id="soon-unlocked" class="hidden grid gap-3">
+        {% for p in coming_products %} {{ render_card(p, "soon") }} {% endfor %}
+    </div>
 </div>
 
 <div id="section-sold" class="tab-section hidden grid gap-3">
@@ -244,9 +286,98 @@
         </p>
         <p class="text-[8px] text-gray-300 font-bold uppercase italic">Local Device Time</p>
     </div>
+    <div class="max-w-xs mx-auto">
+        <button onclick="showLoginModal()"
+                class="w-full bg-white border border-gray-200 text-gray-900 px-6 py-3 rounded-2xl shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2">
+            <span class="text-[10px] font-black uppercase tracking-widest">🔑 Login / Switch Account</span>
+        </button>
+    </div>
 </footer>
 
 <script>
+
+const VIP_KEY = 'dgarage_vip_expires';
+const VIP_PASS = 'mattel2026';
+const VIP_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+function isVip() {
+    const expires = localStorage.getItem(VIP_KEY);
+    return expires && Date.now() < parseInt(expires);
+}
+
+function setVip() {
+    localStorage.setItem(VIP_KEY, Date.now() + VIP_DURATION);
+}
+
+function clearVip() {
+    localStorage.removeItem(VIP_KEY);
+}
+
+function showLoginModal() {
+    document.getElementById('login-modal').classList.remove('hidden');
+    document.getElementById('login-input').value = '';
+    document.getElementById('login-error').classList.add('hidden');
+}
+
+function hideLoginModal() {
+    document.getElementById('login-modal').classList.add('hidden');
+}
+
+function attemptLogin() {
+    const val = document.getElementById('login-input').value;
+    if (val === VIP_PASS) {
+        setVip();
+        hideLoginModal();
+        applyMode();
+        trackEvent('vip_login_success');
+    } else {
+        document.getElementById('login-error').classList.remove('hidden');
+        document.getElementById('login-input').value = '';
+        trackEvent('vip_login_fail');
+    }
+}
+
+function continueAsGuest() {
+    clearVip();
+    hideLoginModal();
+    applyMode();
+    trackEvent('guest_continue');
+}
+
+function applyMode() {
+    const vip = isVip();
+
+    // Units count on Live tab
+    document.querySelectorAll('.vip-units').forEach(el => {
+        el.classList.toggle('blur-sm', !vip);
+        el.classList.toggle('select-none', !vip);
+        el.classList.toggle('pointer-events-none', !vip);
+    });
+
+    // Coming Soon content
+    document.getElementById('soon-lock').classList.toggle('hidden', vip);
+    document.getElementById('soon-unlocked').classList.toggle('hidden', !vip);
+}
+
+// On app start: show login only if no valid VIP key
+function initAuth() {
+    if (isVip()) {
+        hideLoginModal();
+        applyMode();
+        trackEvent('auto_login');
+    } else {
+        // Show login modal (it's visible by default in HTML)
+        trackEvent('login_screen_shown');
+    }
+}
+
+// Enter key on passcode input
+document.getElementById('login-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') attemptLogin();
+});
+
+// OLD functions
+    
 function trackEvent(name, params = {}) {
     if (typeof gtag === "function") {
         gtag('event', name, params);
@@ -411,6 +542,7 @@ document.addEventListener('click', (e) => {
     } catch (_) {}
 });
 
+initAuth();
 formatDates();
 </script>
 
