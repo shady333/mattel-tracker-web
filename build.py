@@ -24,7 +24,7 @@ live_url = (
     f"?store=eq.mattel"
     f"&is_active=eq.true"
     f"&current_qty=gt.0"
-    f"&current_qty=lt.625"
+    f"&current_qty=lt.50"
     f"&select=id,title,image,url,current_qty,price,updated_at,limit"
     f"&order=current_qty.asc"
 )
@@ -65,7 +65,7 @@ def fmt_duration(td: timedelta) -> str:
 
 
 MIN_VALID_YEAR = 2024
-MAX_SHOPIFY_QTY = 625
+MAX_SHOPIFY_QTY = 50
 
 
 def compute_last_cycle_stats(product_id: str) -> dict | None:
