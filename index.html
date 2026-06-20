@@ -54,9 +54,9 @@
         </div>
     </div>
 </div>
+
 <div id="splash" class="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4">
-
         <div class="text-center space-y-1">
             <h2 class="text-lg font-black text-red-600 uppercase italic tracking-tight">Keep DGarage alive 🔥</h2>
             <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Free tool, real costs</p>
@@ -84,43 +84,9 @@
                 Maybe later
             </button>
         </div>
-
-        <p class="text-[9px] text-gray-300 font-bold uppercase text-center tracking-widest">
-            Shown once every 7 days
-        </p>
+        <p class="text-[9px] text-gray-300 font-bold uppercase text-center tracking-widest">Shown once every 7 days</p>
     </div>
 </div>
-
-<script>
-    const SPLASH_KEY = 'dgarage_splash_shown';
-    const SPLASH_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 днів
-
-    function closeSplash() {
-        document.getElementById('splash').classList.add('hidden');
-        localStorage.setItem(SPLASH_KEY, Date.now());
-        trackEvent('splash_dismissed');
-    }
-
-    function initSplash() {
-        const last = localStorage.getItem(SPLASH_KEY);
-        const shouldShow = !last || (Date.now() - parseInt(last)) > SPLASH_INTERVAL;
-        if (shouldShow) {
-            document.getElementById('splash').classList.remove('hidden');
-            trackEvent('splash_shown');
-        }
-    }
-
-    // Закриття по кліку на фон
-    document.getElementById('splash').addEventListener('click', function(e) {
-        if (e.target === this) closeSplash();
-    });
-
-    initSplash();
-</script>
-
-<script>
-    trackEvent('app_opened', { timestamp: Date.now() });
-</script>
 
 <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 p-4 flex justify-between items-center shadow-sm">
     <div class="text-left">
@@ -158,7 +124,7 @@
         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Low Stock & New Arrivals</span>
     </div>
      
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden vip-only-card hidden transition-all duration-300">
     <div class="relative flex-shrink-0">
         <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/e354dca960f428b763dd23107d038d11b5f5c8aa.jpg?v=1778276331" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
@@ -184,7 +150,7 @@
 
         <div class="flex items-center justify-between mt-auto">
             
-            <div class="flex items-baseline gap-1 vip-units transition-all duration-300 cursor-pointer" onclick="if(!isVip()) showLoginModal()">
+            <div class="flex items-baseline gap-1">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none">
                     50+
                 </span>
@@ -215,7 +181,7 @@
     </div>
 </div>
   
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden vip-only-card hidden transition-all duration-300">
     <div class="relative flex-shrink-0">
         <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/155946411a40b3638c3b2189cda67fda1ad646b7.jpg?v=1781283250" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
@@ -232,7 +198,7 @@
             </span>
             <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
                   data-mode="live"
-                  data-utc="2026-06-20T18:21:00.493247+00:00">
+                  data-utc="2026-06-20T19:15:57.465992+00:00">
                 Loading...
             </span>
         </div>
@@ -241,7 +207,7 @@
 
         <div class="flex items-center justify-between mt-auto">
             
-            <div class="flex items-baseline gap-1 vip-units transition-all duration-300 cursor-pointer" onclick="if(!isVip()) showLoginModal()">
+            <div class="flex items-baseline gap-1">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none">
                     50+
                 </span>
@@ -272,7 +238,7 @@
     </div>
 </div>
   
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden vip-only-card hidden transition-all duration-300">
     <div class="relative flex-shrink-0">
         <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/19a6eba9067dc143e1171c5ecd128e96f5f3f259.jpg?v=1778276342" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
@@ -289,7 +255,7 @@
             </span>
             <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
                   data-mode="live"
-                  data-utc="2026-06-20T18:21:41.66818+00:00">
+                  data-utc="2026-06-20T19:16:42.819575+00:00">
                 Loading...
             </span>
         </div>
@@ -298,7 +264,7 @@
 
         <div class="flex items-center justify-between mt-auto">
             
-            <div class="flex items-baseline gap-1 vip-units transition-all duration-300 cursor-pointer" onclick="if(!isVip()) showLoginModal()">
+            <div class="flex items-baseline gap-1">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none">
                     50+
                 </span>
@@ -329,7 +295,7 @@
     </div>
 </div>
   
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden vip-only-card hidden transition-all duration-300">
     <div class="relative flex-shrink-0">
         <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/b87d376719de137664d1d72101eb3c577684d0ce.jpg?v=1781283214" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
@@ -355,7 +321,7 @@
 
         <div class="flex items-center justify-between mt-auto">
             
-            <div class="flex items-baseline gap-1 vip-units transition-all duration-300 cursor-pointer" onclick="if(!isVip()) showLoginModal()">
+            <div class="flex items-baseline gap-1">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none">
                     50+
                 </span>
@@ -386,7 +352,7 @@
     </div>
 </div>
   
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden vip-only-card hidden transition-all duration-300">
     <div class="relative flex-shrink-0">
         <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/84f06cb75e5eed98af9ba955af788906ac722256.jpg?v=1778276345" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
@@ -403,7 +369,7 @@
             </span>
             <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
                   data-mode="live"
-                  data-utc="2026-06-20T18:35:02.755243+00:00">
+                  data-utc="2026-06-20T19:20:38.550484+00:00">
                 Loading...
             </span>
         </div>
@@ -412,7 +378,7 @@
 
         <div class="flex items-center justify-between mt-auto">
             
-            <div class="flex items-baseline gap-1 vip-units transition-all duration-300 cursor-pointer" onclick="if(!isVip()) showLoginModal()">
+            <div class="flex items-baseline gap-1">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none">
                     50+
                 </span>
@@ -443,7 +409,7 @@
     </div>
 </div>
   
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden vip-only-card hidden transition-all duration-300">
     <div class="relative flex-shrink-0">
         <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/b359f4936336dd063e14cb0f8e4bbf1d562725a4.jpg?v=1780520239" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
@@ -469,7 +435,7 @@
 
         <div class="flex items-center justify-between mt-auto">
             
-            <div class="flex items-baseline gap-1 vip-units transition-all duration-300 cursor-pointer" onclick="if(!isVip()) showLoginModal()">
+            <div class="flex items-baseline gap-1">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none">
                     50+
                 </span>
@@ -500,7 +466,7 @@
     </div>
 </div>
   
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden vip-only-card hidden transition-all duration-300">
     <div class="relative flex-shrink-0">
         <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/a152ceafbf52833ffe18327e1e3f31465df4967c.jpg?v=1778276333" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
@@ -526,7 +492,7 @@
 
         <div class="flex items-center justify-between mt-auto">
             
-            <div class="flex items-baseline gap-1 vip-units transition-all duration-300 cursor-pointer" onclick="if(!isVip()) showLoginModal()">
+            <div class="flex items-baseline gap-1">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none">
                     50+
                 </span>
@@ -557,7 +523,7 @@
     </div>
 </div>
   
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden vip-only-card hidden transition-all duration-300">
     <div class="relative flex-shrink-0">
         <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/a7975951ee7064ef478b61280f64c22bc64f5bd1.jpg?v=1778276345" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
@@ -574,7 +540,7 @@
             </span>
             <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
                   data-mode="live"
-                  data-utc="2026-06-20T18:36:30.869079+00:00">
+                  data-utc="2026-06-20T19:22:50.684165+00:00">
                 Loading...
             </span>
         </div>
@@ -583,7 +549,7 @@
 
         <div class="flex items-center justify-between mt-auto">
             
-            <div class="flex items-baseline gap-1 vip-units transition-all duration-300 cursor-pointer" onclick="if(!isVip()) showLoginModal()">
+            <div class="flex items-baseline gap-1">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none">
                     50+
                 </span>
@@ -614,7 +580,7 @@
     </div>
 </div>
   
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden vip-only-card hidden transition-all duration-300">
     <div class="relative flex-shrink-0">
         <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/vlbrm0jfpj5ho94vuwr3.jpg?v=1777501333" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
@@ -640,7 +606,7 @@
 
         <div class="flex items-center justify-between mt-auto">
             
-            <div class="flex items-baseline gap-1 vip-units transition-all duration-300 cursor-pointer" onclick="if(!isVip()) showLoginModal()">
+            <div class="flex items-baseline gap-1">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none">
                     50+
                 </span>
@@ -671,7 +637,7 @@
     </div>
 </div>
   
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden vip-only-card hidden transition-all duration-300">
     <div class="relative flex-shrink-0">
         <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/15b22acc26422d5f56f3dd451874bbfdd8e29cdf.jpg?v=1773254410" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
@@ -688,7 +654,7 @@
             </span>
             <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
                   data-mode="live"
-                  data-utc="2026-06-20T18:17:43.059539+00:00">
+                  data-utc="2026-06-20T19:15:10.121258+00:00">
                 Loading...
             </span>
         </div>
@@ -697,7 +663,7 @@
 
         <div class="flex items-center justify-between mt-auto">
             
-            <div class="flex items-baseline gap-1 vip-units transition-all duration-300 cursor-pointer" onclick="if(!isVip()) showLoginModal()">
+            <div class="flex items-baseline gap-1">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none">
                     50+
                 </span>
@@ -746,7 +712,7 @@
         </div>
         <div class="blur-sm pointer-events-none select-none grid gap-3">
              
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden ">
     <div class="relative flex-shrink-0">
         <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/trqd5elxyrosodetcsdu.jpg?v=1781730798" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
@@ -763,7 +729,7 @@
             </span>
             <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
                   data-mode="soon"
-                  data-utc="2026-06-20T19:08:44.033204+00:00">
+                  data-utc="2026-06-20T19:22:30.645917+00:00">
                 Loading...
             </span>
         </div>
@@ -806,7 +772,7 @@
 
     <div id="soon-unlocked" class="hidden grid gap-3">
          
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden ">
     <div class="relative flex-shrink-0">
         <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/trqd5elxyrosodetcsdu.jpg?v=1781730798" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
@@ -823,7 +789,7 @@
             </span>
             <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
                   data-mode="soon"
-                  data-utc="2026-06-20T19:08:44.033204+00:00">
+                  data-utc="2026-06-20T19:22:30.645917+00:00">
                 Loading...
             </span>
         </div>
@@ -870,500 +836,7 @@
         <span class="text-[9px] font-bold text-red-500 uppercase italic">Latest 10 items</span>
     </div>
      
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
-    <div class="relative flex-shrink-0">
-        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/eb30f7695fbe2553daff745a3206bded31766d13.jpg?v=1778276329" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
-        
-            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
-        
-    </div>
-
-    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
-        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Premium Boulevard Datsun King Cab Baja Custom / Personnalisé</h3>
-
-        <div class="flex items-center gap-1.5 mt-1">
-            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
-                $7.0
-            </span>
-            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
-                  data-mode="sold"
-                  data-utc="2026-06-20T04:56:45.637019+00:00">
-                Loading...
-            </span>
-        </div>
-
-        
-        <div class="flex items-center gap-2 mt-0.5">
-            
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    ⏱ 12h 52m
-                </span>
-            
-            
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    🔄 1 restock
-                </span>
-            
-        </div>
-        
-
-        <div class="flex items-center justify-between mt-auto">
-            
-
-            
-        </div>
-    </div>
-
-    <div class="flex-shrink-0 ml-auto">
-        <a href="https://creations.mattel.com/products/hot-wheels-premium-boulevard-datsun-king-cab-baja-custom-personnalise-jhw32"
-           target="_blank"
-           onclick="trackEvent('select_item', {
-               item_list_name: 'sold',
-               items: [{
-                   item_id: '8eaf4b3d-3e20-489c-a7d1-6e7396c87f4d',
-                   item_name: 'Hot Wheels Premium Boulevard Datsun King Cab Baja Custom / Personnalisé',
-                   price: 7.0,
-                   item_brand: 'Mattel',
-                   item_category: 'Diecast'
-               }]
-           })"
-           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
-            Link
-        </a>
-    </div>
-</div>
-  
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
-    <div class="relative flex-shrink-0">
-        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/f5685724c7eef74e93928901b4af8326afd6a83d.jpg?v=1781283232" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
-        
-            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
-        
-    </div>
-
-    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
-        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Premium Car Culture Ferrari 250 GTO Vintage Racing</h3>
-
-        <div class="flex items-center gap-1.5 mt-1">
-            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
-                $7.0
-            </span>
-            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
-                  data-mode="sold"
-                  data-utc="2026-06-20T03:43:42.885075+00:00">
-                Loading...
-            </span>
-        </div>
-
-        
-        <div class="flex items-center gap-2 mt-0.5">
-            
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    ⏱ 11h 38m
-                </span>
-            
-            
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    🔄 1 restock
-                </span>
-            
-        </div>
-        
-
-        <div class="flex items-center justify-between mt-auto">
-            
-
-            
-        </div>
-    </div>
-
-    <div class="flex-shrink-0 ml-auto">
-        <a href="https://creations.mattel.com/products/hot-wheels-premium-car-culture-jkf25"
-           target="_blank"
-           onclick="trackEvent('select_item', {
-               item_list_name: 'sold',
-               items: [{
-                   item_id: 'f215942f-0ebf-433f-bff2-63f16456ee02',
-                   item_name: 'Hot Wheels Premium Car Culture Ferrari 250 GTO Vintage Racing',
-                   price: 7.0,
-                   item_brand: 'Mattel',
-                   item_category: 'Diecast'
-               }]
-           })"
-           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
-            Link
-        </a>
-    </div>
-</div>
-  
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
-    <div class="relative flex-shrink-0">
-        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/a8f5eea64dc5dc65759f3714205f01ca96a91441.jpg?v=1778276341" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
-        
-            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
-        
-    </div>
-
-    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
-        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Premium Fast & Furious 2010 BMW M5</h3>
-
-        <div class="flex items-center gap-1.5 mt-1">
-            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
-                $7.0
-            </span>
-            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
-                  data-mode="sold"
-                  data-utc="2026-06-19T21:01:17.857119+00:00">
-                Loading...
-            </span>
-        </div>
-
-        
-        <div class="flex items-center gap-2 mt-0.5">
-            
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    ⏱ 4d 1h 40m
-                </span>
-            
-            
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    🔄 1 restock
-                </span>
-            
-        </div>
-        
-
-        <div class="flex items-center justify-between mt-auto">
-            
-
-            
-        </div>
-    </div>
-
-    <div class="flex-shrink-0 ml-auto">
-        <a href="https://creations.mattel.com/products/hot-wheels-premium-fast-furious-2010-bmw-m5-jhw62"
-           target="_blank"
-           onclick="trackEvent('select_item', {
-               item_list_name: 'sold',
-               items: [{
-                   item_id: '01e09835-9bb7-4637-a1eb-af1c1b64230e',
-                   item_name: 'Hot Wheels Premium Fast & Furious 2010 BMW M5',
-                   price: 7.0,
-                   item_brand: 'Mattel',
-                   item_category: 'Diecast'
-               }]
-           })"
-           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
-            Link
-        </a>
-    </div>
-</div>
-  
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
-    <div class="relative flex-shrink-0">
-        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/ab88d39c548e6ed85eb014482b8ba3a551147d12.jpg?v=1780520256" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
-        
-            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
-        
-    </div>
-
-    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
-        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Premium Boulevard 2021 Toyota GR Supra</h3>
-
-        <div class="flex items-center gap-1.5 mt-1">
-            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
-                $7.0
-            </span>
-            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
-                  data-mode="sold"
-                  data-utc="2026-06-18T15:35:08.505975+00:00">
-                Loading...
-            </span>
-        </div>
-
-        
-        <div class="flex items-center gap-2 mt-0.5">
-            
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    ⏱ 5d 23h 30m
-                </span>
-            
-            
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    🔄 2 restocks
-                </span>
-            
-        </div>
-        
-
-        <div class="flex items-center justify-between mt-auto">
-            
-
-            
-        </div>
-    </div>
-
-    <div class="flex-shrink-0 ml-auto">
-        <a href="https://creations.mattel.com/products/hot-wheels-premium-boulevard-2021-toyota-gr-supra-jhw34"
-           target="_blank"
-           onclick="trackEvent('select_item', {
-               item_list_name: 'sold',
-               items: [{
-                   item_id: '0a7a3123-5df0-422c-8783-6b5ee4a52650',
-                   item_name: 'Hot Wheels Premium Boulevard 2021 Toyota GR Supra',
-                   price: 7.0,
-                   item_brand: 'Mattel',
-                   item_category: 'Diecast'
-               }]
-           })"
-           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
-            Link
-        </a>
-    </div>
-</div>
-  
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
-    <div class="relative flex-shrink-0">
-        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/phrfoetmbjwh6t23egdd.jpg?v=1778797106" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
-        
-            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
-        
-    </div>
-
-    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
-        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels RLC Exclusive 1962 Ford F-100</h3>
-
-        <div class="flex items-center gap-1.5 mt-1">
-            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
-                $28.0
-            </span>
-            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
-                  data-mode="sold"
-                  data-utc="2026-06-17T03:57:12.231463+00:00">
-                Loading...
-            </span>
-        </div>
-
-        
-        <div class="flex items-center gap-2 mt-0.5">
-            
-            
-        </div>
-        
-
-        <div class="flex items-center justify-between mt-auto">
-            
-
-            
-                <span class="text-[8px] font-black uppercase italic px-1.5 py-0.5 rounded border 
-                    text-gray-400 bg-gray-100 border-gray-200">
-                    Limit: 2
-                </span>
-            
-        </div>
-    </div>
-
-    <div class="flex-shrink-0 ml-auto">
-        <a href="https://creations.mattel.com/products/rlc-exclusive-ford-f100-jjy60"
-           target="_blank"
-           onclick="trackEvent('select_item', {
-               item_list_name: 'sold',
-               items: [{
-                   item_id: '2235d300-14cf-47c1-afdb-426656c9f47e',
-                   item_name: 'Hot Wheels RLC Exclusive 1962 Ford F-100',
-                   price: 28.0,
-                   item_brand: 'Mattel',
-                   item_category: 'Diecast'
-               }]
-           })"
-           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
-            Link
-        </a>
-    </div>
-</div>
-  
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
-    <div class="relative flex-shrink-0">
-        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/90c2ca6bd08a6789fae4f1cb0c50a94ceda07dfb.jpg?v=1764797713" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
-        
-            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
-        
-    </div>
-
-    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
-        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Premium Car Culture Timeless Icons Porsche Carrera GT</h3>
-
-        <div class="flex items-center gap-1.5 mt-1">
-            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
-                $8.0
-            </span>
-            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
-                  data-mode="sold"
-                  data-utc="2026-06-16T23:36:22.841198+00:00">
-                Loading...
-            </span>
-        </div>
-
-        
-        <div class="flex items-center gap-2 mt-0.5">
-            
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    ⏱ 18d 3h 34m
-                </span>
-            
-            
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    🔄 2 restocks
-                </span>
-            
-        </div>
-        
-
-        <div class="flex items-center justify-between mt-auto">
-            
-
-            
-        </div>
-    </div>
-
-    <div class="flex-shrink-0 ml-auto">
-        <a href="https://creations.mattel.com/products/hot-wheels-premium-car-culture-timeless-icons-porshe-carrera-gt-jbk91"
-           target="_blank"
-           onclick="trackEvent('select_item', {
-               item_list_name: 'sold',
-               items: [{
-                   item_id: 'c4c2738e-4e59-495e-bca8-07ddb31d06d6',
-                   item_name: 'Hot Wheels Premium Car Culture Timeless Icons Porsche Carrera GT',
-                   price: 8.0,
-                   item_brand: 'Mattel',
-                   item_category: 'Diecast'
-               }]
-           })"
-           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
-            Link
-        </a>
-    </div>
-</div>
-  
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
-    <div class="relative flex-shrink-0">
-        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/b4b70d301b02a775a20cc2a66648f10992970d20.jpg?v=1780520216" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
-        
-            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
-        
-    </div>
-
-    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
-        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Premium Collector Display Set</h3>
-
-        <div class="flex items-center gap-1.5 mt-1">
-            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
-                $36.0
-            </span>
-            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
-                  data-mode="sold"
-                  data-utc="2026-06-13T22:29:25.018712+00:00">
-                Loading...
-            </span>
-        </div>
-
-        
-        <div class="flex items-center gap-2 mt-0.5">
-            
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    ⏱ 1d 6h 26m
-                </span>
-            
-            
-                <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    🔄 1 restock
-                </span>
-            
-        </div>
-        
-
-        <div class="flex items-center justify-between mt-auto">
-            
-
-            
-        </div>
-    </div>
-
-    <div class="flex-shrink-0 ml-auto">
-        <a href="https://creations.mattel.com/products/hot-wheels-premium-collector-display-sets-jhw44"
-           target="_blank"
-           onclick="trackEvent('select_item', {
-               item_list_name: 'sold',
-               items: [{
-                   item_id: 'a0c0d574-7f3e-4de2-a1cd-b5fccf0fc13f',
-                   item_name: 'Hot Wheels Premium Collector Display Set',
-                   price: 36.0,
-                   item_brand: 'Mattel',
-                   item_category: 'Diecast'
-               }]
-           })"
-           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
-            Link
-        </a>
-    </div>
-</div>
-  
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
-    <div class="relative flex-shrink-0">
-        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/595316d7e1ddee9089a707601141e9e0ba50ee1c.jpg?v=1778276325" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
-        
-            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
-        
-    </div>
-
-    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
-        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Premium Volkswagen Kool Kombi</h3>
-
-        <div class="flex items-center gap-1.5 mt-1">
-            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
-                $7.0
-            </span>
-            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
-                  data-mode="sold"
-                  data-utc="2026-06-13T05:59:39.930177+00:00">
-                Loading...
-            </span>
-        </div>
-
-        
-        <div class="flex items-center gap-2 mt-0.5">
-            
-            
-        </div>
-        
-
-        <div class="flex items-center justify-between mt-auto">
-            
-
-            
-        </div>
-    </div>
-
-    <div class="flex-shrink-0 ml-auto">
-        <a href="https://creations.mattel.com/products/hot-wheels-premium-volkswagen-kool-kombi-jhx01"
-           target="_blank"
-           onclick="trackEvent('select_item', {
-               item_list_name: 'sold',
-               items: [{
-                   item_id: '2740a5f2-8218-4ae6-9550-989c4efd0038',
-                   item_name: 'Hot Wheels Premium Volkswagen Kool Kombi',
-                   price: 7.0,
-                   item_brand: 'Mattel',
-                   item_category: 'Diecast'
-               }]
-           })"
-           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
-            Link
-        </a>
-    </div>
-</div>
-  
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden ">
     <div class="relative flex-shrink-0">
         <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/a6171875fbc04070536f7044432f6e747e290835.jpg?v=1773700777" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
@@ -1426,24 +899,24 @@
     </div>
 </div>
   
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden ">
     <div class="relative flex-shrink-0">
-        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/mnldb73tokatx69pdrt6.jpg?v=1780068326" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
+        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/0af1a21a16730aa95c46c4294f1addc7fece361a.jpg?v=1765988823" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         
             <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
         
     </div>
 
     <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
-        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels RLC Exclusive 1948 Chevy Fleetline With CHASE Version</h3>
+        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Premium Boulevard Ford RS200</h3>
 
         <div class="flex items-center gap-1.5 mt-1">
             <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
-                $33.0
+                $6.5
             </span>
             <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
                   data-mode="sold"
-                  data-utc="2026-06-09T16:10:09.405635+00:00">
+                  data-utc="2026-06-04T01:23:40.667114+00:00">
                 Loading...
             </span>
         </div>
@@ -1452,7 +925,7 @@
         <div class="flex items-center gap-2 mt-0.5">
             
                 <span class="text-[8px] text-gray-500 font-bold uppercase">
-                    ⏱ 2m
+                    ⏱ 12d 6h 48m
                 </span>
             
             
@@ -1467,23 +940,522 @@
             
 
             
-                <span class="text-[8px] font-black uppercase italic px-1.5 py-0.5 rounded border 
-                    text-gray-400 bg-gray-100 border-gray-200">
-                    Limit: 2
+        </div>
+    </div>
+
+    <div class="flex-shrink-0 ml-auto">
+        <a href="https://creations.mattel.com/products/hot-premium-wheels-boulevard-ford-rs200-jbl29"
+           target="_blank"
+           onclick="trackEvent('select_item', {
+               item_list_name: 'sold',
+               items: [{
+                   item_id: '0cb8cfe3-9d9d-4acf-98e3-2324ac63934d',
+                   item_name: 'Hot Wheels Premium Boulevard Ford RS200',
+                   price: 6.5,
+                   item_brand: 'Mattel',
+                   item_category: 'Diecast'
+               }]
+           })"
+           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
+            Link
+        </a>
+    </div>
+</div>
+  
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden ">
+    <div class="relative flex-shrink-0">
+        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/8b1f9b3a26c9f6b23d4b386e8c1321374850bb74.jpg?v=1763509317" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
+        
+            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
+        
+    </div>
+
+    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
+        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Premium Fast & Furious 2003 Dodge Viper SRT 10</h3>
+
+        <div class="flex items-center gap-1.5 mt-1">
+            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
+                $8.0
+            </span>
+            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
+                  data-mode="sold"
+                  data-utc="2026-06-03T22:30:26.270073+00:00">
+                Loading...
+            </span>
+        </div>
+
+        
+        <div class="flex items-center gap-2 mt-0.5">
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    ⏱ 12d 3h 13m
                 </span>
+            
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    🔄 5 restocks
+                </span>
+            
+        </div>
+        
+
+        <div class="flex items-center justify-between mt-auto">
+            
+
             
         </div>
     </div>
 
     <div class="flex-shrink-0 ml-auto">
-        <a href="https://creations.mattel.com/products/rlc-1948-chevy-fleetline-jjy66"
+        <a href="https://creations.mattel.com/products/hot-wheels-premium-fast-furious-vehicle-jbl85"
            target="_blank"
            onclick="trackEvent('select_item', {
                item_list_name: 'sold',
                items: [{
-                   item_id: '20d885a0-25a6-4d13-80fd-370e565fe2a2',
-                   item_name: 'Hot Wheels RLC Exclusive 1948 Chevy Fleetline With CHASE Version',
-                   price: 33.0,
+                   item_id: 'e05e164a-e5ed-4385-afad-7a7c4b990bb1',
+                   item_name: 'Hot Wheels Premium Fast & Furious 2003 Dodge Viper SRT 10',
+                   price: 8.0,
+                   item_brand: 'Mattel',
+                   item_category: 'Diecast'
+               }]
+           })"
+           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
+            Link
+        </a>
+    </div>
+</div>
+  
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden ">
+    <div class="relative flex-shrink-0">
+        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/7bd38297eaba1b6eb96c9243edbe8f6a509e7fb1.jpg?v=1765933300" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
+        
+            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
+        
+    </div>
+
+    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
+        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Premium Boulevard Nissan 300ZX Twin Turbo / BI-Turbo</h3>
+
+        <div class="flex items-center gap-1.5 mt-1">
+            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
+                $8.0
+            </span>
+            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
+                  data-mode="sold"
+                  data-utc="2026-05-22T15:02:01.938958+00:00">
+                Loading...
+            </span>
+        </div>
+
+        
+        <div class="flex items-center gap-2 mt-0.5">
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    ⏱ 20h 47m
+                </span>
+            
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    🔄 6 restocks
+                </span>
+            
+        </div>
+        
+
+        <div class="flex items-center justify-between mt-auto">
+            
+
+            
+        </div>
+    </div>
+
+    <div class="flex-shrink-0 ml-auto">
+        <a href="https://creations.mattel.com/products/hot-premium-wheels-boulevard-nissan-300zx-twin-turbo-bi-turbo-jhw25"
+           target="_blank"
+           onclick="trackEvent('select_item', {
+               item_list_name: 'sold',
+               items: [{
+                   item_id: 'd328df0d-a9da-4012-b40e-69af571e357a',
+                   item_name: 'Hot Wheels Premium Boulevard Nissan 300ZX Twin Turbo / BI-Turbo',
+                   price: 8.0,
+                   item_brand: 'Mattel',
+                   item_category: 'Diecast'
+               }]
+           })"
+           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
+            Link
+        </a>
+    </div>
+</div>
+  
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden ">
+    <div class="relative flex-shrink-0">
+        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/rksehq1qotqmnvtmalrm.jpg?v=1750116685" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
+        
+            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
+        
+    </div>
+
+    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
+        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Mario Kart Pauline Vehicle</h3>
+
+        <div class="flex items-center gap-1.5 mt-1">
+            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
+                $16.5
+            </span>
+            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
+                  data-mode="sold"
+                  data-utc="2026-05-22T14:46:34.970736+00:00">
+                Loading...
+            </span>
+        </div>
+
+        
+        <div class="flex items-center gap-2 mt-0.5">
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    ⏱ 10d 5h 30m
+                </span>
+            
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    🔄 1 restock
+                </span>
+            
+        </div>
+        
+
+        <div class="flex items-center justify-between mt-auto">
+            
+
+            
+        </div>
+    </div>
+
+    <div class="flex-shrink-0 ml-auto">
+        <a href="https://creations.mattel.com/products/hot-wheels-mario-kart-pauline-vehicle-jjp81"
+           target="_blank"
+           onclick="trackEvent('select_item', {
+               item_list_name: 'sold',
+               items: [{
+                   item_id: '4ab6e401-d8ca-4a97-8bf8-46da100e95c2',
+                   item_name: 'Hot Wheels Mario Kart Pauline Vehicle',
+                   price: 16.5,
+                   item_brand: 'Mattel',
+                   item_category: 'Diecast'
+               }]
+           })"
+           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
+            Link
+        </a>
+    </div>
+</div>
+  
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden ">
+    <div class="relative flex-shrink-0">
+        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/cde6f4592604681c9e1a47b64546c2c05f1572d4.jpg?v=1766011973" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
+        
+            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
+        
+    </div>
+
+    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
+        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Premium Boulevard Ford GT</h3>
+
+        <div class="flex items-center gap-1.5 mt-1">
+            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
+                $6.5
+            </span>
+            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
+                  data-mode="sold"
+                  data-utc="2026-05-22T14:46:31.801923+00:00">
+                Loading...
+            </span>
+        </div>
+
+        
+        <div class="flex items-center gap-2 mt-0.5">
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    ⏱ 3d 10h 51m
+                </span>
+            
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    🔄 4 restocks
+                </span>
+            
+        </div>
+        
+
+        <div class="flex items-center justify-between mt-auto">
+            
+
+            
+        </div>
+    </div>
+
+    <div class="flex-shrink-0 ml-auto">
+        <a href="https://creations.mattel.com/products/hot-premium-wheels-boulevard-ford-gt-jhw26"
+           target="_blank"
+           onclick="trackEvent('select_item', {
+               item_list_name: 'sold',
+               items: [{
+                   item_id: '98b877ac-a3b6-4633-a14b-42c189f808f4',
+                   item_name: 'Hot Wheels Premium Boulevard Ford GT',
+                   price: 6.5,
+                   item_brand: 'Mattel',
+                   item_category: 'Diecast'
+               }]
+           })"
+           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
+            Link
+        </a>
+    </div>
+</div>
+  
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden ">
+    <div class="relative flex-shrink-0">
+        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/10f4c74c443d481764eb4ebb9e1f5b28d4fd6bc6.jpg?v=1773700694" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
+        
+            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
+        
+    </div>
+
+    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
+        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Premium Boulevard Toyota GR Yaris</h3>
+
+        <div class="flex items-center gap-1.5 mt-1">
+            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
+                $8.0
+            </span>
+            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
+                  data-mode="sold"
+                  data-utc="2026-05-14T16:04:22.844765+00:00">
+                Loading...
+            </span>
+        </div>
+
+        
+        <div class="flex items-center gap-2 mt-0.5">
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    ⏱ 30m
+                </span>
+            
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    🔄 2 restocks
+                </span>
+            
+        </div>
+        
+
+        <div class="flex items-center justify-between mt-auto">
+            
+
+            
+        </div>
+    </div>
+
+    <div class="flex-shrink-0 ml-auto">
+        <a href="https://creations.mattel.com/products/hot-wheels-premium-boulevard-jhw19"
+           target="_blank"
+           onclick="trackEvent('select_item', {
+               item_list_name: 'sold',
+               items: [{
+                   item_id: '66750142-6a3e-4a1b-a525-a06e832c0398',
+                   item_name: 'Hot Wheels Premium Boulevard Toyota GR Yaris',
+                   price: 8.0,
+                   item_brand: 'Mattel',
+                   item_category: 'Diecast'
+               }]
+           })"
+           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
+            Link
+        </a>
+    </div>
+</div>
+  
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden ">
+    <div class="relative flex-shrink-0">
+        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/rosxkzqou0th6kan0e0u.jpg?v=1763511680" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
+        
+            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
+        
+    </div>
+
+    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
+        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Elite 64 Radford Type 62-2 Pikes Peak</h3>
+
+        <div class="flex items-center gap-1.5 mt-1">
+            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
+                $22.0
+            </span>
+            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
+                  data-mode="sold"
+                  data-utc="2026-05-01T18:21:29.23651+00:00">
+                Loading...
+            </span>
+        </div>
+
+        
+        <div class="flex items-center gap-2 mt-0.5">
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    ⏱ 5h 12m
+                </span>
+            
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    🔄 1 restock
+                </span>
+            
+        </div>
+        
+
+        <div class="flex items-center justify-between mt-auto">
+            
+
+            
+        </div>
+    </div>
+
+    <div class="flex-shrink-0 ml-auto">
+        <a href="https://creations.mattel.com/products/hot-wheels-elite64-radford-type-62-2-pikes-peak-jcp44"
+           target="_blank"
+           onclick="trackEvent('select_item', {
+               item_list_name: 'sold',
+               items: [{
+                   item_id: 'a44a464c-70d9-4260-950b-b2b236b0f95e',
+                   item_name: 'Hot Wheels Elite 64 Radford Type 62-2 Pikes Peak',
+                   price: 22.0,
+                   item_brand: 'Mattel',
+                   item_category: 'Diecast'
+               }]
+           })"
+           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
+            Link
+        </a>
+    </div>
+</div>
+  
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden ">
+    <div class="relative flex-shrink-0">
+        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/b3fn0dxpfsfkwl8vfdbs.jpg?v=1763508435" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
+        
+            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
+        
+    </div>
+
+    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
+        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Elite 64 Aston Martin Valkyrie</h3>
+
+        <div class="flex items-center gap-1.5 mt-1">
+            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
+                $20.0
+            </span>
+            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
+                  data-mode="sold"
+                  data-utc="2026-05-01T13:11:34.736321+00:00">
+                Loading...
+            </span>
+        </div>
+
+        
+        <div class="flex items-center gap-2 mt-0.5">
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    ⏱ 2d 5h 44m
+                </span>
+            
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    🔄 4 restocks
+                </span>
+            
+        </div>
+        
+
+        <div class="flex items-center justify-between mt-auto">
+            
+
+            
+        </div>
+    </div>
+
+    <div class="flex-shrink-0 ml-auto">
+        <a href="https://creations.mattel.com/products/hot-wheels-elite-64-aston-martin-valkyrie-hwr91"
+           target="_blank"
+           onclick="trackEvent('select_item', {
+               item_list_name: 'sold',
+               items: [{
+                   item_id: '62c5d88e-b597-49db-8bff-048c1b2f2599',
+                   item_name: 'Hot Wheels Elite 64 Aston Martin Valkyrie',
+                   price: 20.0,
+                   item_brand: 'Mattel',
+                   item_category: 'Diecast'
+               }]
+           })"
+           class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
+            Link
+        </a>
+    </div>
+</div>
+  
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden ">
+    <div class="relative flex-shrink-0">
+        <img src="https://cdn.shopify.com/s/files/1/0568/1132/3597/files/manutaujemkkjubgssrb.jpg?v=1774036572" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
+        
+            <span class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-[8px] font-black text-white uppercase italic text-center px-1">Out of Stock</span>
+        
+    </div>
+
+    <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5 text-left">
+        <h3 class="font-black text-[11px] sm:text-[13px] text-gray-800 uppercase leading-tight truncate">Hot Wheels Elite 64 LBWK Lamborghini Aventador LP 700-4</h3>
+
+        <div class="flex items-center gap-1.5 mt-1">
+            <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
+                $22.0
+            </span>
+            <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
+                  data-mode="sold"
+                  data-utc="2026-04-29T13:26:46.729132+00:00">
+                Loading...
+            </span>
+        </div>
+
+        
+        <div class="flex items-center gap-2 mt-0.5">
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    ⏱ 6h 4m
+                </span>
+            
+            
+                <span class="text-[8px] text-gray-500 font-bold uppercase">
+                    🔄 9 restocks
+                </span>
+            
+        </div>
+        
+
+        <div class="flex items-center justify-between mt-auto">
+            
+
+            
+        </div>
+    </div>
+
+    <div class="flex-shrink-0 ml-auto">
+        <a href="https://creations.mattel.com/products/hot-wheels-elite-64-lbwk-lamborghini-aventador-lp-700-4-jnf04"
+           target="_blank"
+           onclick="trackEvent('select_item', {
+               item_list_name: 'sold',
+               items: [{
+                   item_id: '3bd2f5f6-c684-4962-ad8a-00060aa8f16e',
+                   item_name: 'Hot Wheels Elite 64 LBWK Lamborghini Aventador LP 700-4',
+                   price: 22.0,
                    item_brand: 'Mattel',
                    item_category: 'Diecast'
                }]
@@ -1510,7 +1482,7 @@
 
     <div class="space-y-1">
         <p class="text-[9px] text-gray-400 font-black uppercase tracking-widest">
-            Build Time: <span class="text-red-500 build-time" data-utc="2026-06-20T19:13:29Z">Loading...</span>
+            Build Time: <span class="text-red-500 build-time" data-utc="2026-06-20T19:25:03Z">Loading...</span>
         </p>
         <p class="text-[8px] text-gray-300 font-bold uppercase italic">Local Device Time</p>
     </div>
@@ -1523,10 +1495,12 @@
 </footer>
 
 <script>
-
 const VIP_KEY = 'dgarage_vip_expires';
 const VIP_PASS = 'mattel2026';
 const VIP_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+const SPLASH_KEY = 'dgarage_splash_shown';
+const SPLASH_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 function isVip() {
     const expires = localStorage.getItem(VIP_KEY);
@@ -1540,6 +1514,25 @@ function setVip() {
 function clearVip() {
     localStorage.removeItem(VIP_KEY);
 }
+
+function closeSplash() {
+    document.getElementById('splash').classList.add('hidden');
+    localStorage.setItem(SPLASH_KEY, Date.now());
+    trackEvent('splash_dismissed');
+}
+
+function initSplash() {
+    const last = localStorage.getItem(SPLASH_KEY);
+    const shouldShow = !last || (Date.now() - parseInt(last)) > SPLASH_INTERVAL;
+    if (shouldShow) {
+        document.getElementById('splash').classList.remove('hidden');
+        trackEvent('splash_shown');
+    }
+}
+
+document.getElementById('splash').addEventListener('click', function(e) {
+    if (e.target === this) closeSplash();
+});
 
 function showLoginModal() {
     document.getElementById('login-modal').classList.remove('hidden');
@@ -1575,44 +1568,33 @@ function continueAsGuest() {
 function applyMode() {
     const vip = isVip();
 
-    // Units count on Live tab
-    document.querySelectorAll('.vip-units').forEach(el => {
-        el.classList.toggle('blur-sm', !vip);
-        el.classList.toggle('select-none', !vip);
-        el.classList.toggle('pointer-events-none', !vip);
+    // Повне приховування карток з новинками для гостей, або відображення для VIP
+    document.querySelectorAll('.vip-only-card').forEach(el => {
+        if (vip) {
+            el.classList.remove('hidden');
+        } else {
+            el.classList.add('hidden');
+        }
     });
 
-    // Coming Soon content
+    // Керування станом вкладки Coming Soon
     document.getElementById('soon-lock').classList.toggle('hidden', vip);
     document.getElementById('soon-unlocked').classList.toggle('hidden', !vip);
 }
 
-// On app start: show login only if no valid VIP key
 function initAuth() {
     if (isVip()) {
         hideLoginModal();
         applyMode();
         trackEvent('auto_login');
     } else {
-        // Show login modal (it's visible by default in HTML)
         trackEvent('login_screen_shown');
     }
 }
 
-// Enter key on passcode input
 document.getElementById('login-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') attemptLogin();
 });
-
-// OLD functions
-    
-function trackEvent(name, params = {}) {
-    if (typeof gtag === "function") {
-        gtag('event', name, params);
-    }
-}
-
-trackEvent('app_opened', { timestamp: Date.now() });
 
 function switchTab(tab) {
     document.querySelectorAll('.tab-section').forEach(s => s.classList.add('hidden'));
@@ -1657,6 +1639,7 @@ function formatDates() {
     }
 }
 
+// PWA Installation
 let deferredPrompt;
 const installBtn = document.getElementById('installBtn');
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -1686,6 +1669,7 @@ if (isIOS && !isStandalone) {
     };
 }
 
+// Heatmap and analytical tracking
 let maxScrollPercent = 0;
 const scrollMilestones = new Set();
 
@@ -1730,7 +1714,6 @@ function onVisibilityChange() {
         }
     }
 }
-
 document.addEventListener('visibilitychange', onVisibilityChange);
 
 window.addEventListener('beforeunload', () => {
@@ -1770,7 +1753,9 @@ document.addEventListener('click', (e) => {
     } catch (_) {}
 });
 
+// Run
 initAuth();
+initSplash();
 formatDates();
 </script>
 

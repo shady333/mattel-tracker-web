@@ -54,9 +54,9 @@
         </div>
     </div>
 </div>
+
 <div id="splash" class="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4">
-
         <div class="text-center space-y-1">
             <h2 class="text-lg font-black text-red-600 uppercase italic tracking-tight">Keep DGarage alive 🔥</h2>
             <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Free tool, real costs</p>
@@ -84,43 +84,9 @@
                 Maybe later
             </button>
         </div>
-
-        <p class="text-[9px] text-gray-300 font-bold uppercase text-center tracking-widest">
-            Shown once every 7 days
-        </p>
+        <p class="text-[9px] text-gray-300 font-bold uppercase text-center tracking-widest">Shown once every 7 days</p>
     </div>
 </div>
-
-<script>
-    const SPLASH_KEY = 'dgarage_splash_shown';
-    const SPLASH_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 днів
-
-    function closeSplash() {
-        document.getElementById('splash').classList.add('hidden');
-        localStorage.setItem(SPLASH_KEY, Date.now());
-        trackEvent('splash_dismissed');
-    }
-
-    function initSplash() {
-        const last = localStorage.getItem(SPLASH_KEY);
-        const shouldShow = !last || (Date.now() - parseInt(last)) > SPLASH_INTERVAL;
-        if (shouldShow) {
-            document.getElementById('splash').classList.remove('hidden');
-            trackEvent('splash_shown');
-        }
-    }
-
-    // Закриття по кліку на фон
-    document.getElementById('splash').addEventListener('click', function(e) {
-        if (e.target === this) closeSplash();
-    });
-
-    initSplash();
-</script>
-
-<script>
-    trackEvent('app_opened', { timestamp: Date.now() });
-</script>
 
 <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 p-4 flex justify-between items-center shadow-sm">
     <div class="text-left">
@@ -152,7 +118,7 @@
 <main class="max-w-2xl mx-auto p-4">
 
 {% macro render_card(p, mode) %}
-<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden">
+<div class="product-card bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex gap-3 items-center overflow-hidden {% if mode == 'live' and p.is_new_arrival %}vip-only-card hidden transition-all duration-300{% endif %}">
     <div class="relative flex-shrink-0">
         <img src="{{ p.image or 'https://via.placeholder.com/100' }}" class="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-xl bg-gray-50">
         {% if mode == "sold" %}
@@ -195,7 +161,7 @@
 
         <div class="flex items-center justify-between mt-auto">
             {% if mode == "live" %}
-            <div class="flex items-baseline gap-1 vip-units transition-all duration-300 cursor-pointer" onclick="if(!isVip()) showLoginModal()">
+            <div class="flex items-baseline gap-1">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none">
                     {{ p.current_qty }}{% if p.current_qty >= 50 %}+{% endif %}
                 </span>
@@ -298,10 +264,12 @@
 </footer>
 
 <script>
-
 const VIP_KEY = 'dgarage_vip_expires';
 const VIP_PASS = 'mattel2026';
 const VIP_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+const SPLASH_KEY = 'dgarage_splash_shown';
+const SPLASH_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 function isVip() {
     const expires = localStorage.getItem(VIP_KEY);
@@ -315,6 +283,25 @@ function setVip() {
 function clearVip() {
     localStorage.removeItem(VIP_KEY);
 }
+
+function closeSplash() {
+    document.getElementById('splash').classList.add('hidden');
+    localStorage.setItem(SPLASH_KEY, Date.now());
+    trackEvent('splash_dismissed');
+}
+
+function initSplash() {
+    const last = localStorage.getItem(SPLASH_KEY);
+    const shouldShow = !last || (Date.now() - parseInt(last)) > SPLASH_INTERVAL;
+    if (shouldShow) {
+        document.getElementById('splash').classList.remove('hidden');
+        trackEvent('splash_shown');
+    }
+}
+
+document.getElementById('splash').addEventListener('click', function(e) {
+    if (e.target === this) closeSplash();
+});
 
 function showLoginModal() {
     document.getElementById('login-modal').classList.remove('hidden');
@@ -350,44 +337,33 @@ function continueAsGuest() {
 function applyMode() {
     const vip = isVip();
 
-    // Units count on Live tab
-    document.querySelectorAll('.vip-units').forEach(el => {
-        el.classList.toggle('blur-sm', !vip);
-        el.classList.toggle('select-none', !vip);
-        el.classList.toggle('pointer-events-none', !vip);
+    // Повне приховування карток з новинками для гостей, або відображення для VIP
+    document.querySelectorAll('.vip-only-card').forEach(el => {
+        if (vip) {
+            el.classList.remove('hidden');
+        } else {
+            el.classList.add('hidden');
+        }
     });
 
-    // Coming Soon content
+    // Керування станом вкладки Coming Soon
     document.getElementById('soon-lock').classList.toggle('hidden', vip);
     document.getElementById('soon-unlocked').classList.toggle('hidden', !vip);
 }
 
-// On app start: show login only if no valid VIP key
 function initAuth() {
     if (isVip()) {
         hideLoginModal();
         applyMode();
         trackEvent('auto_login');
     } else {
-        // Show login modal (it's visible by default in HTML)
         trackEvent('login_screen_shown');
     }
 }
 
-// Enter key on passcode input
 document.getElementById('login-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') attemptLogin();
 });
-
-// OLD functions
-    
-function trackEvent(name, params = {}) {
-    if (typeof gtag === "function") {
-        gtag('event', name, params);
-    }
-}
-
-trackEvent('app_opened', { timestamp: Date.now() });
 
 function switchTab(tab) {
     document.querySelectorAll('.tab-section').forEach(s => s.classList.add('hidden'));
@@ -432,6 +408,7 @@ function formatDates() {
     }
 }
 
+// PWA Installation
 let deferredPrompt;
 const installBtn = document.getElementById('installBtn');
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -461,6 +438,7 @@ if (isIOS && !isStandalone) {
     };
 }
 
+// Heatmap and analytical tracking
 let maxScrollPercent = 0;
 const scrollMilestones = new Set();
 
@@ -505,7 +483,6 @@ function onVisibilityChange() {
         }
     }
 }
-
 document.addEventListener('visibilitychange', onVisibilityChange);
 
 window.addEventListener('beforeunload', () => {
@@ -545,7 +522,9 @@ document.addEventListener('click', (e) => {
     } catch (_) {}
 });
 
+// Run
 initAuth();
+initSplash();
 formatDates();
 </script>
 
