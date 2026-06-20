@@ -38,8 +38,8 @@ new_arrivals_params = {
     "store": "eq.mattel",
     "is_active": "eq.true",
     "current_qty": "gte.50",
-    "select": "id,title,image,url,current_qty,price,updated_at,limit",
-    "order": "updated_at.desc",
+    "select": "id,title,image,url,current_qty,price,updated_at,detected_at,limit",
+    "order": "detected_at.desc",  # Сортуємо за реальною датою появи
     "limit": "10"
 }
 
