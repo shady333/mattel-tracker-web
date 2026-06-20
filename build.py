@@ -106,18 +106,18 @@ MAX_SHOPIFY_QTY = 50
 
 
 def compute_last_cycle_stats(product_id: str) -> dict | None:
+    # Запитуємо історію, відсортовану від найновіших до найстаріших (desc)
     rows = fetch_data(
         "product_qty_history",
         {
             "product_id": f"eq.{product_id}",
             "select": "old_qty,new_qty,changed_at",
-            "order": "changed_at.asc",
+            "order": "changed_at.desc",  # Важливо: йдемо від свіжих до старих
         },
     )
     if not rows:
         return None
 
-    # Парсимо і фільтруємо невалідні дати
     norm_rows = []
     for ev in rows:
         changed_at = ev.get("changed_at")
@@ -135,74 +135,63 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     if not norm_rows:
         return None
 
-    def is_restock(ev: dict, prev_ev: dict | None) -> bool:
-        old_q, new_q = ev["old_qty"], ev["new_qty"]
-        if new_q is None or new_q <= 0:
-            return False
-        # Явний restock з нуля або перший запис в БД
-        if old_q is None or old_q == 0:
-            return True
-        # Явний restock посередині: qty виросла до максимуму
-        if new_q >= MAX_SHOPIFY_QTY and new_q > old_q:
-            return True
-        # Implicit restock: перший валідний запис після фільтрації невалідних,
-        # і він починається з максимальної кількості
-        if prev_ev is None and old_q >= MAX_SHOPIFY_QTY:
-            return True
-        # Implicit restock: попередній запис був soldout (new_qty=0),
-        # але запис restock відсутній в БД
-        if prev_ev is not None and prev_ev["new_qty"] == 0 and old_q > 0:
-            return True
-        return False
-
-    def is_soldout(ev: dict) -> bool:
-        old_q, new_q = ev["old_qty"], ev["new_qty"]
-        return (old_q is not None and old_q > 0
-                and new_q is not None and new_q == 0)
-
-    # Збираємо restock події з урахуванням попереднього запису
-    restock_events = []
-    for i, ev in enumerate(norm_rows):
-        prev = norm_rows[i - 1] if i > 0 else None
-        if is_restock(ev, prev):
-            restock_events.append(ev)
-
-    total_restocks = len(restock_events)
-
-    # Знаходимо останній soldout
+    # 1. Знаходимо найсвіжіший soldout (new_qty == 0)
     last_soldout = None
-    for ev in reversed(norm_rows):
-        if is_soldout(ev):
+    soldout_idx = -1
+    for i, ev in enumerate(norm_rows):
+        old_q, new_q = ev["old_qty"], ev["new_qty"]
+        if old_q is not None and old_q > 0 and new_q is not None and new_q == 0:
             last_soldout = ev
+            soldout_idx = i
             break
 
     if last_soldout is None:
         return None
 
-    # Знаходимо останній restock ДО цього soldout
+    # 2. Шукаємо точку старту цього конкретного продажу (restock)
+    # Рухаємося по історії ДАЛІ В МИНУЛЕ (тобто вниз по norm_rows після soldout_idx)
     last_restock = None
-    for ev in reversed(restock_events):
-        if ev["changed_at"] < last_soldout["changed_at"]:
+    for i in range(soldout_idx + 1, len(norm_rows)):
+        ev = norm_rows[i]
+        old_q, new_q = ev["old_qty"], ev["new_qty"]
+        
+        # Точка старту — це коли товар з'явився з нуля (або виріс після іншого soldout)
+        if (old_q is None or old_q == 0) and (new_q is not None and new_q > 0):
+            last_restock = ev
+            break
+        # Або якщо qty різко стрибнула вгору до ліміту (наприклад, з 5 одиниць до 50)
+        if (new_q is not None and old_q is not None) and (new_q >= MAX_SHOPIFY_QTY and new_q > old_q):
             last_restock = ev
             break
 
-    # Fallback: якщо restock не знайдено — беремо перший запис в БД
+    # Fallback: якщо ідеального моменту ресторану в базі немає,
+    # беремо найперший хронологічно запис, який передував soldout
     if last_restock is None:
-        first_ev = norm_rows[0]
-        if first_ev["changed_at"] < last_soldout["changed_at"]:
-            last_restock = first_ev
-        else:
-            return None
+        last_restock = norm_rows[-1] 
 
+    # Рахуємо тривалість саме цього останнього забігу
     duration = last_soldout["changed_at"] - last_restock["changed_at"]
 
     if duration.total_seconds() <= 0:
         return None
 
+    # 3. Підрахунок загальної кількості ресторанів за весь час (залишаємо як статистику)
+    total_restocks = 0
+    for i in range(len(norm_rows) - 1):
+        curr = norm_rows[i]
+        prev = norm_rows[i + 1] # Оскільки desc, то i+1 — це подія, що була раніше
+        
+        # Якщо кількість колись зросла
+        if curr["new_qty"] is not None and prev["new_qty"] is not None:
+            if curr["new_qty"] > prev["new_qty"] and curr["new_qty"] >= 50:
+                total_restocks += 1
+            elif prev["new_qty"] == 0 and curr["new_qty"] > 0:
+                total_restocks += 1
+
     return {
         "restock_at": last_restock["changed_at"],
         "soldout_at": last_soldout["changed_at"],
-        "total_restocks": total_restocks,
+        "total_restocks": max(1, total_restocks), # мінімум 1 ресток був, раз він продався
         "duration": duration,
     }
 
