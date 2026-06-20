@@ -22,14 +22,13 @@ def fetch_data(endpoint, params=None):
 # TAB 1: Live Inventory (Low Stock + New Arrivals)
 # ==========================================
 
-# 1. Запит на Low Stock (додано фільтр назви, щоб не проскакував непотріб)
+# 1. Запит на Low Stock (менше 50 одиниць)
 low_stock_url = (
     f"{sb_url}/rest/v1/products"
     f"?store=eq.mattel"
     f"&is_active=eq.true"
     f"&current_qty=gt.0"
     f"&current_qty=lt.50"
-    f"&title=ilike.Hot Wheels*"  # ФІЛЬТР: тільки Hot Wheels
     f"&select=id,title,image,url,current_qty,price,updated_at,limit"
     f"&order=current_qty.asc"
 )
@@ -61,11 +60,11 @@ try:
     # Спочатку додаємо ті, у яких найменша кількість
     for p in low_stock_list:
         if p["id"] not in seen_ids:
-            p["is_new_arrival"] = False  # маркер для шаблону, що це Low Stock (видимий гостям)
+            p["is_new_arrival"] = False  # маркер для шаблону, що це Low Stock
             live_products.append(p)
             seen_ids.add(p["id"])
             
-    # Потім додаємо свіжі новинки (будуть приховані для гостей за класом vip-only-card)
+    # Потім додаємо свіжі новинки
     for p in new_arrivals_list:
         if p["id"] not in seen_ids:
             p["is_new_arrival"] = True  # маркер для шаблону, що це новинка
@@ -79,7 +78,6 @@ except Exception as e:
 soon_params = {
     "store": "eq.mattel",
     "availability": "eq.Coming Soon",
-    "title": "ilike.Hot Wheels*", # Фільтруємо і майбутні релізи
     "select": "id,title,image,url,current_qty,price,updated_at,limit",
     "order": "updated_at.desc"
 }
@@ -107,13 +105,15 @@ MIN_VALID_YEAR = 2024
 MAX_SHOPIFY_QTY = 50
 
 
+# Оригінальний метод підрахунку часу та статистики без змін
 def compute_last_cycle_stats(product_id: str) -> dict | None:
+    # Запитуємо історію, відсортовану від найновіших до найстаріших (desc)
     rows = fetch_data(
         "product_qty_history",
         {
             "product_id": f"eq.{product_id}",
             "select": "old_qty,new_qty,changed_at",
-            "order": "changed_at.desc",
+            "order": "changed_at.desc",  # Важливо: йдемо від свіжих до старих
         },
     )
     if not rows:
@@ -136,7 +136,7 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     if not norm_rows:
         return None
 
-    # 1. Знаходимо найсвіжіший soldout
+    # 1. Знаходимо найсвіжіший soldout (new_qty == 0)
     last_soldout = None
     soldout_idx = -1
     for i, ev in enumerate(norm_rows):
@@ -149,33 +149,40 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     if last_soldout is None:
         return None
 
-    # 2. Шукаємо точку ресторану цього конкретного циклу
+    # 2. Шукаємо точку старту цього конкретного продажу (restock)
+    # Рухаємося по історії ДАЛІ В МИНУЛЕ (тобто вниз по norm_rows після soldout_idx)
     last_restock = None
     for i in range(soldout_idx + 1, len(norm_rows)):
         ev = norm_rows[i]
         old_q, new_q = ev["old_qty"], ev["new_qty"]
         
+        # Точка старту — це коли товар з'явився з нуля (або виріс після іншого soldout)
         if (old_q is None or old_q == 0) and (new_q is not None and new_q > 0):
             last_restock = ev
             break
+        # Або якщо qty різко стрибнула вгору до ліміту (наприклад, з 5 одиниць до 50)
         if (new_q is not None and old_q is not None) and (new_q >= MAX_SHOPIFY_QTY and new_q > old_q):
             last_restock = ev
             break
 
+    # Fallback: якщо ідеального моменту ресторану в базі немає,
+    # беремо найперший хронологічно запис, який передував soldout
     if last_restock is None:
         last_restock = norm_rows[-1] 
 
+    # Рахуємо тривалість саме цього останнього забігу
     duration = last_soldout["changed_at"] - last_restock["changed_at"]
 
     if duration.total_seconds() <= 0:
         return None
 
-    # 3. Підрахунок загальної кількості ресторанів
+    # 3. Підрахунок загальної кількості ресторанів за весь час (залишаємо як статистику)
     total_restocks = 0
     for i in range(len(norm_rows) - 1):
         curr = norm_rows[i]
-        prev = norm_rows[i + 1]
+        prev = norm_rows[i + 1] # Оскільки desc, то i+1 — це подія, що була раніше
         
+        # Якщо кількість колись зросла
         if curr["new_qty"] is not None and prev["new_qty"] is not None:
             if curr["new_qty"] > prev["new_qty"] and curr["new_qty"] >= 50:
                 total_restocks += 1
@@ -185,19 +192,17 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     return {
         "restock_at": last_restock["changed_at"],
         "soldout_at": last_soldout["changed_at"],
-        "total_restocks": max(1, total_restocks),
+        "total_restocks": max(1, total_restocks), # мінімум 1 ресток був, раз він продався
         "duration": duration,
     }
 
 
-# TAB 3: Sold Out (Unique & Latest 10)
-# Збільшуємо ліміт вибірки з історії до 100, тому що після фільтрації за назвою 
-# "Hot Wheels" частина записів відсіється, і нам потрібно гарантовано назбирати 10 унікальних ID.
+# TAB 3: Sold Out (Оригінальна вибірка + інтегрований фільтр назви)
 history_params = {
     "new_qty": "eq.0",
     "select": "product_id,changed_at",
     "order": "changed_at.desc",
-    "limit": "100", 
+    "limit": "40", # Оригінальний ліміт історії
 }
 history_records = fetch_data("product_qty_history", history_params)
 
@@ -208,6 +213,8 @@ if history_records:
         p_id = rec["product_id"]
         if p_id not in unique_sold_map:
             unique_sold_map[p_id] = rec["changed_at"]
+        if len(unique_sold_map) >= 10:
+            break
 
     if unique_sold_map:
         p_ids = ",".join([f"\"{pid}\"" for pid in unique_sold_map.keys()])
@@ -215,13 +222,12 @@ if history_records:
             "products",
             {
                 "id": f"in.({p_ids})",
-                "title": "ilike.Hot Wheels*", # ФІЛЬТР: беремо тільки Hot Wheels в архів
+                "title": "ilike.Hot Wheels*", # Збережено фільтр: тільки машинки Hot Wheels
                 "select": "id,title,image,url,price,limit",
             },
         )
 
-        # Беремо перші 10 штук, які пройшли фільтрацію по бренду
-        for item in details[:10]:
+        for item in details:
             pid = item["id"]
             item["sold_at"] = unique_sold_map.get(pid)
 
