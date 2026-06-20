@@ -169,7 +169,7 @@
 
         <div class="flex items-center gap-1.5 mt-1">
             <span class="bg-green-100 text-green-700 text-[9px] font-black px-1.5 py-0.5 rounded italic">
-                ${}
+                ${{ p.price or '0.00' }}
             </span>
             <span class="text-[8px] text-gray-400 font-bold uppercase product-time"
                   data-mode="{{ mode }}"
