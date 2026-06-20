@@ -18,8 +18,12 @@ def fetch_data(endpoint, params=None):
         print(f"Error fetching {endpoint}: {e}")
         return []
 
-# TAB 1: Live Inventory
-live_url = (
+# ==========================================
+# TAB 1: Live Inventory (Low Stock + New Arrivals)
+# ==========================================
+
+# 1. Запит на Low Stock (менше 50 одиниць)
+low_stock_url = (
     f"{sb_url}/rest/v1/products"
     f"?store=eq.mattel"
     f"&is_active=eq.true"
@@ -29,11 +33,43 @@ live_url = (
     f"&order=current_qty.asc"
 )
 
+# 2. Запит на останні новинки, які є в наявності (current_qty >= 50)
+new_arrivals_params = {
+    "store": "eq.mattel",
+    "is_active": "eq.true",
+    "current_qty": "gte.50",
+    "select": "id,title,image,url,current_qty,price,updated_at,limit",
+    "order": "updated_at.desc",
+    "limit": "10"
+}
+
 live_products = []
 try:
-    res = requests.get(live_url, headers=headers)
-    res.raise_for_status()
-    live_products = res.json()
+    # Отримуємо Low Stock
+    res_low = requests.get(low_stock_url, headers=headers)
+    res_low.raise_for_status()
+    low_stock_list = res_low.json()
+    
+    # Отримуємо New Arrivals
+    new_arrivals_list = fetch_data("products", new_arrivals_params)
+    
+    # Об'єднуємо списки з дедуплікацією за ID (про всяк випадок)
+    seen_ids = set()
+    
+    # Спочатку додаємо ті, у яких найменша кількість (вони вже відсортовані за current_qty.asc)
+    for p in low_stock_list:
+        if p["id"] not in seen_ids:
+            p["is_new_arrival"] = False  # маркер для шаблону, що це Low Stock
+            live_products.append(p)
+            seen_ids.add(p["id"])
+            
+    # Потім додаємо свіжі товари (вони відсортовані за updated_at.desc)
+    for p in new_arrivals_list:
+        if p["id"] not in seen_ids:
+            p["is_new_arrival"] = True  # маркер для шаблону, що це новинка
+            live_products.append(p)
+            seen_ids.add(p["id"])
+
 except Exception as e:
     print(f"Live products error: {e}")
 
