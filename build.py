@@ -19,60 +19,51 @@ def fetch_data(endpoint, params=None):
         return []
 
 # ==========================================
-# TAB 1: Live Inventory (Low Stock + New Arrivals)
+# TAB 1: Live Inventory (Low Stock & New Arrivals)
 # ==========================================
 
-# 1. Запит на Low Stock (менше 50 одиниць)
-low_stock_url = (
-    f"{sb_url}/rest/v1/products"
-    f"?store=eq.mattel"
-    f"&is_active=eq.true"
-    f"&current_qty=gt.0"
-    f"&current_qty=lt.50"
-    f"&select=id,title,image,url,current_qty,price,updated_at,limit"
-    f"&order=current_qty.asc"
-)
-
-# 2. Запит на останні новинки, які є в наявності (current_qty >= 50)
-new_arrivals_params = {
-    "store": "eq.mattel",
-    "is_active": "eq.true",
-    "current_qty": "gte.50",
-    "title": "ilike.Hot Wheels*",
-    "select": "id,title,image,url,current_qty,price,updated_at,detected_at,limit",
-    "order": "detected_at.desc",  # Сортуємо за реальною датою появи
-    "limit": "10"
-}
-
-live_products = []
 try:
-    # Отримуємо Low Stock
+    # 1. Топ-5 останніх новинок (сортування за датою появи від нових до старих)
+    new_arrivals_params = {
+        "store": "eq.mattel",
+        "is_active": "eq.true",
+        "current_qty": "gte.50",
+        "title": "ilike.Hot Wheels*",
+        "select": "id,title,image,url,current_qty,price,updated_at,detected_at,limit",
+        "order": "detected_at.desc",
+        "limit": "5"  # Показуємо рівно останні нові 5 одиниць
+    }
+    new_arrivals_list = fetch_data("products", new_arrivals_params)
+    for p in new_arrivals_list:
+        p["is_new_arrival"] = True  # маркер для шаблону
+
+    # Зберігаємо ID новинок, щоб вони не дублювалися в блоці знизу, якщо раптом перетинаються
+    seen_ids = {p["id"] for p in new_arrivals_list}
+
+    # 2. Товари, кількість яких менше 625 (від найбільшої кількості до меншої)
+    low_stock_url = (
+        f"{sb_url}/rest/v1/products"
+        f"?store=eq.mattel"
+        f"&is_active=eq.true"
+        f"&current_qty=gt.0"
+        f"&current_qty=lt.625"  # Фільтр: менше 625 одиниць
+        f"&select=id,title,image,url,current_qty,price,updated_at,limit"
+        f"&order=current_qty.desc"  # Сортування від найбільшої кількості до меншої
+    )
     res_low = requests.get(low_stock_url, headers=headers)
     res_low.raise_for_status()
-    low_stock_list = res_low.json()
-    
-    # Отримуємо New Arrivals
-    new_arrivals_list = fetch_data("products", new_arrivals_params)
-    
-    # Об'єднуємо списки з дедуплікацією за ID
-    seen_ids = set()
-    
-    # Спочатку додаємо ті, у яких найменша кількість
-    for p in low_stock_list:
+    raw_low_stock = res_low.json()
+
+    low_stock_list = []
+    for p in raw_low_stock:
         if p["id"] not in seen_ids:
-            p["is_new_arrival"] = False  # маркер для шаблону, що це Low Stock
-            live_products.append(p)
-            seen_ids.add(p["id"])
-            
-    # Потім додаємо свіжі новинки
-    for p in new_arrivals_list:
-        if p["id"] not in seen_ids:
-            p["is_new_arrival"] = True  # маркер для шаблону, що це новинка
-            live_products.append(p)
-            seen_ids.add(p["id"])
+            p["is_new_arrival"] = False  # маркер, що це Low Stock товар
+            low_stock_list.append(p)
 
 except Exception as e:
     print(f"Live products error: {e}")
+    new_arrivals_list = []
+    low_stock_list = []
 
 # TAB 2: Coming Soon
 soon_params = {
@@ -100,20 +91,16 @@ def fmt_duration(td: timedelta) -> str:
         parts.append(f"{minutes % 60}m")
     return " ".join(parts)
 
-
 MIN_VALID_YEAR = 2024
 MAX_SHOPIFY_QTY = 50
 
-
-# Оригінальний метод підрахунку часу та статистики без змін
 def compute_last_cycle_stats(product_id: str) -> dict | None:
-    # Запитуємо історію, відсортовану від найновіших до найстаріших (desc)
     rows = fetch_data(
         "product_qty_history",
         {
             "product_id": f"eq.{product_id}",
             "select": "old_qty,new_qty,changed_at",
-            "order": "changed_at.desc",  # Важливо: йдемо від свіжих до старих
+            "order": "changed_at.desc",
         },
     )
     if not rows:
@@ -136,7 +123,6 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     if not norm_rows:
         return None
 
-    # 1. Знаходимо найсвіжіший soldout (new_qty == 0)
     last_soldout = None
     soldout_idx = -1
     for i, ev in enumerate(norm_rows):
@@ -149,40 +135,28 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     if last_soldout is None:
         return None
 
-    # 2. Шукаємо точку старту цього конкретного продажу (restock)
-    # Рухаємося по історії ДАЛІ В МИНУЛЕ (тобто вниз по norm_rows після soldout_idx)
     last_restock = None
     for i in range(soldout_idx + 1, len(norm_rows)):
         ev = norm_rows[i]
         old_q, new_q = ev["old_qty"], ev["new_qty"]
-        
-        # Точка старту — це коли товар з'явився з нуля (або виріс після іншого soldout)
         if (old_q is None or old_q == 0) and (new_q is not None and new_q > 0):
             last_restock = ev
             break
-        # Або якщо qty різко стрибнула вгору до ліміту (наприклад, з 5 одиниць до 50)
         if (new_q is not None and old_q is not None) and (new_q >= MAX_SHOPIFY_QTY and new_q > old_q):
             last_restock = ev
             break
 
-    # Fallback: якщо ідеального моменту ресторану в базі немає,
-    # беремо найперший хронологічно запис, який передував soldout
     if last_restock is None:
         last_restock = norm_rows[-1] 
 
-    # Рахуємо тривалість саме цього останнього забігу
     duration = last_soldout["changed_at"] - last_restock["changed_at"]
-
     if duration.total_seconds() <= 0:
         return None
 
-    # 3. Підрахунок загальної кількості ресторанів за весь час (залишаємо як статистику)
     total_restocks = 0
     for i in range(len(norm_rows) - 1):
         curr = norm_rows[i]
-        prev = norm_rows[i + 1] # Оскільки desc, то i+1 — це подія, що була раніше
-        
-        # Якщо кількість колись зросла
+        prev = norm_rows[i + 1]
         if curr["new_qty"] is not None and prev["new_qty"] is not None:
             if curr["new_qty"] > prev["new_qty"] and curr["new_qty"] >= 50:
                 total_restocks += 1
@@ -192,17 +166,16 @@ def compute_last_cycle_stats(product_id: str) -> dict | None:
     return {
         "restock_at": last_restock["changed_at"],
         "soldout_at": last_soldout["changed_at"],
-        "total_restocks": max(1, total_restocks), # мінімум 1 ресток був, раз він продався
+        "total_restocks": max(1, total_restocks),
         "duration": duration,
     }
 
-
-# TAB 3: Sold Out (Оригінальна вибірка + інтегрований фільтр назви)
+# TAB 3: Sold Out
 history_params = {
     "new_qty": "eq.0",
     "select": "product_id,changed_at",
     "order": "changed_at.desc",
-    "limit": "40", # Оригінальний ліміт історії
+    "limit": "40",
 }
 history_records = fetch_data("product_qty_history", history_params)
 
@@ -222,7 +195,7 @@ if history_records:
             "products",
             {
                 "id": f"in.({p_ids})",
-                "title": "ilike.Hot Wheels*", # Збережено фільтр: тільки машинки Hot Wheels
+                "title": "ilike.Hot Wheels*",
                 "select": "id,title,image,url,price,limit",
             },
         )
@@ -230,7 +203,6 @@ if history_records:
         for item in details:
             pid = item["id"]
             item["sold_at"] = unique_sold_map.get(pid)
-
             cycle = compute_last_cycle_stats(pid)
             if cycle:
                 item["total_restocks"] = cycle["total_restocks"]
@@ -238,7 +210,6 @@ if history_records:
             else:
                 item["total_restocks"] = None
                 item["sold_duration"] = None
-
             sold_products.append(item)
 
         sold_products.sort(key=lambda x: x.get("sold_at", ""), reverse=True)
@@ -248,7 +219,8 @@ with open('template.html', 'r') as f:
     template = Template(f.read())
 
 html_output = template.render(
-    live_products=live_products,
+    new_arrivals=new_arrivals_list,
+    low_stock_products=low_stock_list,
     coming_products=coming_products,
     sold_products=sold_products,
     last_updated=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")

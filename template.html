@@ -202,7 +202,20 @@
     <div class="px-1 mb-1">
         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Low Stock & New Arrivals</span>
     </div>
-    {% for p in live_products %} {{ render_card(p, "live") }} {% endfor %}
+    
+    {% for p in new_arrivals %} 
+        {{ render_card(p, "live") }} 
+    {% endfor %}
+
+    <div class="relative flex py-3 items-center">
+        <div class="flex-grow border-t border-red-200"></div>
+        <span class="flex-shrink mx-4 text-[9px] font-black text-red-500 uppercase tracking-wider italic">Low Stock Limit (< 625 Qty)</span>
+        <div class="flex-grow border-t border-red-200"></div>
+    </div>
+
+    {% for p in low_stock_products %} 
+        {{ render_card(p, "live") }} 
+    {% endfor %}
 </div>
 
 <div id="section-soon" class="tab-section hidden grid gap-3">
