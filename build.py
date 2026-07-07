@@ -66,13 +66,29 @@ except Exception as e:
     low_stock_list = []
 
 # TAB 2: Coming Soon
+# TAB 2: Coming Soon
 soon_params = {
     "store": "eq.mattel",
     "availability": "eq.Coming Soon",
     "select": "id,title,image,url,current_qty,price,updated_at,limit",
     "order": "updated_at.desc"
 }
-coming_products = fetch_data("products", soon_params)
+raw_coming_products = fetch_data("products", soon_params)
+
+coming_products = []
+if raw_coming_products:
+    ids = ",".join([f'"{p["id"]}"' for p in raw_coming_products])
+    history_check = fetch_data(
+        "product_qty_history",
+        {
+            "product_id": f"in.({ids})",
+            "select": "product_id",
+        },
+    )
+    released_ids = {h["product_id"] for h in history_check}
+    # Якщо в товару колись змінювався qty — він уже реально виходив
+    # і давно не "Coming Soon", навіть якщо availability це не відобразив
+    coming_products = [p for p in raw_coming_products if p["id"] not in released_ids]
 
 # Helpers
 def fmt_duration(td: timedelta) -> str:
