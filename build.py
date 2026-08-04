@@ -37,7 +37,7 @@ try:
         "or": "(availability.neq.Coming Soon,availability.is.null)",
         "select": "id,title,image,url,current_qty,price,updated_at,detected_at,limit",
         "order": "detected_at.desc",
-        "limit": "5"  # Показуємо рівно останні нові 5 одиниць
+        "limit": "10"  # Показуємо рівно останні нові 5 одиниць
     }
     new_arrivals_list = fetch_data("products", new_arrivals_params)
     for p in new_arrivals_list:
