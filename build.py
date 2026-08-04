@@ -24,10 +24,11 @@ def fetch_data(endpoint, params=None):
 
 try:
     # 1. Топ-5 останніх новинок (сортування за датою появи від нових до старих)
+    # ВАЖЛИВО: не фільтруємо за current_qty, інакше товари з невідомою (null)
+    # кількістю відсіюються ще на рівні PostgREST (null ніколи не проходить gte/lte)
     new_arrivals_params = {
         "store": "eq.mattel",
         "is_active": "eq.true",
-        "current_qty": "gte.50",
         "title": "ilike.Hot Wheels*",
         "select": "id,title,image,url,current_qty,price,updated_at,detected_at,limit",
         "order": "detected_at.desc",
@@ -40,7 +41,7 @@ try:
     # Зберігаємо ID новинок, щоб вони не дублювалися в блоці знизу, якщо раптом перетинаються
     seen_ids = {p["id"] for p in new_arrivals_list}
 
-    # 2. Товари, кількість яких менше 625 (від найбільшої кількості до меншої)
+    # 2. Товари, кількість яких менше 625 (від найменшої кількості до найбільшої)
     low_stock_url = (
         f"{sb_url}/rest/v1/products"
         f"?store=eq.mattel"
@@ -48,7 +49,7 @@ try:
         f"&current_qty=gt.0"
         f"&current_qty=lt.625"  # Фільтр: менше 625 одиниць
         f"&select=id,title,image,url,current_qty,price,updated_at,limit"
-        f"&order=current_qty.desc"  # Сортування від найбільшої кількості до меншої
+        f"&order=current_qty.asc"  # Сортування від найменшої кількості до найбільшої
     )
     res_low = requests.get(low_stock_url, headers=headers)
     res_low.raise_for_status()
@@ -65,7 +66,6 @@ except Exception as e:
     new_arrivals_list = []
     low_stock_list = []
 
-# TAB 2: Coming Soon
 # TAB 2: Coming Soon
 soon_params = {
     "store": "eq.mattel",
