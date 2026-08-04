@@ -93,9 +93,21 @@
         <h1 class="text-xl font-black text-red-600 leading-none tracking-tighter uppercase italic">dGarage</h1>
         <p class="text-[9px] font-bold text-gray-400 tracking-widest uppercase">Scale Diecast Tracker</p>
     </div>
-    <button id="installBtn" class="hidden bg-gray-900 text-white text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-lg active:scale-95 transition-all">
-        Install App
-    </button>
+    <div class="flex items-center gap-2">
+        <button onclick="shareSite()" class="bg-gray-100 text-gray-700 text-[10px] font-black px-3 py-2 rounded-full uppercase tracking-widest shadow-sm active:scale-95 transition-all flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            Share
+        </button>
+        <button id="installBtn" class="hidden bg-gray-900 text-white text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-lg active:scale-95 transition-all">
+            Install App
+        </button>
+    </div>
 </header>
 
 <section class="p-4 max-w-2xl mx-auto space-y-3">
@@ -163,7 +175,7 @@
             {% if mode == "live" %}
             <div class="flex items-baseline gap-1">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter leading-none">
-                    {{ p.current_qty }}
+                    {{ p.current_qty if p.current_qty is not none else '?' }}
                 </span>
                 <span class="text-[8px] text-gray-400 font-black uppercase tracking-tighter">Units</span>
             </div>
@@ -199,23 +211,32 @@
 {% endmacro %}
 
 <div id="section-live" class="tab-section grid gap-3">
-    <div class="px-1 mb-1">
-        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Low Stock & New Arrivals</span>
-    </div>
-    
-    {% for p in new_arrivals %} 
-        {{ render_card(p, "live") }} 
-    {% endfor %}
 
-    <div class="relative flex py-3 items-center">
-        <div class="flex-grow border-t border-red-200"></div>
-        <span class="flex-shrink mx-4 text-[9px] font-black text-red-500 uppercase tracking-wider italic">Low Stock Limit (< 625 Qty)</span>
-        <div class="flex-grow border-t border-red-200"></div>
+    <button onclick="toggleSection('new-arrivals')" class="flex items-center justify-between w-full px-1 py-1 active:opacity-60 transition-opacity">
+        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">✨ New Arrivals</span>
+        <svg id="new-arrivals-icon" class="w-3.5 h-3.5 text-gray-400 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 9l-7 7-7-7" />
+        </svg>
+    </button>
+
+    <div id="new-arrivals-content" class="hidden grid gap-3">
+        {% for p in new_arrivals %} 
+            {{ render_card(p, "live") }} 
+        {% endfor %}
     </div>
 
-    {% for p in low_stock_products %} 
-        {{ render_card(p, "live") }} 
-    {% endfor %}
+    <button onclick="toggleSection('low-stock')" class="flex items-center justify-between w-full px-1 py-1 mt-1 active:opacity-60 transition-opacity">
+        <span class="text-[10px] font-black text-red-500 uppercase tracking-widest italic">Low Stock Limit (&lt; 625 Qty)</span>
+        <svg id="low-stock-icon" class="w-3.5 h-3.5 text-red-500 rotate-180 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 9l-7 7-7-7" />
+        </svg>
+    </button>
+
+    <div id="low-stock-content" class="grid gap-3">
+        {% for p in low_stock_products %} 
+            {{ render_card(p, "live") }} 
+        {% endfor %}
+    </div>
 </div>
 
 <div id="section-soon" class="tab-section hidden grid gap-3">
@@ -395,10 +416,47 @@ function switchTab(tab) {
     trackEvent('tab_switch', { tab });
 }
 
+function toggleSection(id) {
+    const content = document.getElementById(id + '-content');
+    const icon = document.getElementById(id + '-icon');
+    const isNowHidden = content.classList.toggle('hidden');
+    if (icon) icon.classList.toggle('rotate-180', !isNowHidden);
+    trackEvent('section_toggle', { section: id, expanded: !isNowHidden });
+}
+
 function forceRefresh() {
     trackEvent('manual_refresh');
     localStorage.setItem('last_refresh', Date.now());
     location.href = location.href;
+}
+
+async function shareSite() {
+    const shareData = {
+        title: 'dGarage | Mattel Tracker',
+        text: 'Живий трекер наявності Hot Wheels від Mattel — залишки, новинки та розпродані позиції.',
+        url: window.location.href
+    };
+
+    trackEvent('share_click');
+
+    if (navigator.share) {
+        try {
+            await navigator.share(shareData);
+            trackEvent('share_success');
+        } catch (err) {
+            trackEvent('share_cancelled');
+        }
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(shareData.url);
+        alert('Посилання скопійовано в буфер обміну!');
+        trackEvent('share_clipboard_fallback');
+    } catch (err) {
+        window.prompt('Скопіюйте посилання:', shareData.url);
+        trackEvent('share_prompt_fallback');
+    }
 }
 
 function formatDates() {
