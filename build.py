@@ -25,11 +25,16 @@ def fetch_data(endpoint, params=None):
 try:
     # 1. Топ-5 останніх новинок (сортування за датою появи від нових до старих)
     # ВАЖЛИВО: не фільтруємо за current_qty, інакше товари з невідомою (null)
-    # кількістю відсіюються ще на рівні PostgREST (null ніколи не проходить gte/lte)
+    # кількістю відсіюються ще на рівні PostgREST (null ніколи не проходить gte/lte).
+    # Але явно виключаємо availability = "Coming Soon" — такі товари мають
+    # показуватись лише на вкладці Coming Soon, а не серед новинок.
+    # (or-умова, бо availability=neq.Coming Soon сам по собі теж відсік би
+    # товари з availability = null через ту саму особливість null-порівнянь)
     new_arrivals_params = {
         "store": "eq.mattel",
         "is_active": "eq.true",
         "title": "ilike.Hot Wheels*",
+        "or": "(availability.neq.Coming Soon,availability.is.null)",
         "select": "id,title,image,url,current_qty,price,updated_at,detected_at,limit",
         "order": "detected_at.desc",
         "limit": "5"  # Показуємо рівно останні нові 5 одиниць
