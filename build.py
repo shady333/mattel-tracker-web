@@ -33,7 +33,7 @@ try:
     new_arrivals_params = {
         "store": "eq.mattel",
         "is_active": "eq.true",
-        "title": "ilike.Hot Wheels*",
+        "title": "ilike.*Hot Wheels*",
         "or": "(availability.neq.Coming Soon,availability.is.null)",
         "select": "id,title,image,url,current_qty,price,updated_at,detected_at,limit",
         "order": "detected_at.desc",
@@ -216,7 +216,7 @@ if history_records:
             "products",
             {
                 "id": f"in.({p_ids})",
-                "title": "ilike.Hot Wheels*",
+                "title": "ilike.*Hot Wheels*",
                 "select": "id,title,image,url,price,limit",
             },
         )
